@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ProgressBar
+            android:id="@+id/register_progressBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone">
+        </ProgressBar>
+
+
+        <LinearLayout
+            android:id="@+id/register_content_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/login_edit_username_side_padding"
+                android:paddingRight="@dimen/login_edit_username_side_padding">
+
+                <EditText
+                    android:id="@+id/register_fragment_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/register_edit_username"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/login_edit_username_side_padding"
+                android:paddingRight="@dimen/login_edit_username_side_padding">
+
+                <EditText
+                    android:id="@+id/register_fragment_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/register_edit_password"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/login_edit_username_side_padding"
+                android:paddingRight="@dimen/login_edit_username_side_padding">
+
+                <EditText
+                    android:id="@+id/register_fragment_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/register_edit_email"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:id="@+id/register_fragment_button_register"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/register_button_action_register"/>
+            <Button
+                android:id="@+id/register_fragment_button_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/register_button_action_login"/>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
