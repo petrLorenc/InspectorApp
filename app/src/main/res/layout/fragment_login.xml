@@ -3,40 +3,68 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical">
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/login_edit_username_side_padding"
-            android:paddingRight="@dimen/login_edit_username_side_padding">
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/login_edit_username"/>
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/login_edit_username_side_padding"
-            android:paddingRight="@dimen/login_edit_username_side_padding">
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/login_edit_password"/>
-        </android.support.design.widget.TextInputLayout>
-
-        <Button
-            android:id="@+id/login_fragment_button_login"
+        <ProgressBar
+            android:id="@+id/login_progressBar"
+            style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/login_button_action_login"/>
+            android:layout_gravity="center"
+            android:visibility="gone">
+        </ProgressBar>
+
+        <LinearLayout
+            android:id="@+id/login_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/login_text_view_title"
+                android:textSize="@dimen/login_text_view_title"/>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/login_edit_username_side_padding"
+                android:paddingRight="@dimen/login_edit_username_side_padding">
+
+                <EditText
+                    android:id="@+id/login_textview_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/login_edit_username"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/login_edit_username_side_padding"
+                android:paddingRight="@dimen/login_edit_username_side_padding">
+
+                <EditText
+                    android:id="@+id/login_textview_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/login_edit_password"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:id="@+id/login_fragment_button_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_button_action_login"/>
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

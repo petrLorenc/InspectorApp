@@ -9,4 +9,7 @@
     <string name="register_edit_password">Password</string>
     <string name="register_edit_username">Username</string>
     <string name="register_button_action_login">Již mám účet</string>
+    <string name="login_login_error">Vyskytla se chyba. Opakujte prosím přihlášení.</string>
+    <string name="register_text_view_title">REGISTRACE</string>
+    <string name="login_text_view_title">Přihlášení</string>
 </resources>

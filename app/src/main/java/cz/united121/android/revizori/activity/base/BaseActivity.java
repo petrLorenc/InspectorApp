@@ -56,11 +56,17 @@ public abstract class BaseActivity extends AppCompatActivity {
         if(fragment == null){
 			fragment = Fragment.instantiate(this,toFragment.getClass().getName());
             getFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_place,toFragment)
+                    .setCustomAnimations(
+                            R.animator.card_flip_right_in, R.animator.card_flip_right_out,
+                            R.animator.card_flip_left_in, R.animator.card_flip_left_out)
+                    .replace(R.id.fragment_place, toFragment)
                     .addToBackStack(null)
                     .commit();
         }else{
 			getFragmentManager().beginTransaction()
+                    .setCustomAnimations(
+                            R.animator.card_flip_right_in, R.animator.card_flip_right_out,
+                            R.animator.card_flip_left_in, R.animator.card_flip_left_out)
 					.replace(R.id.fragment_place,toFragment)
 					.addToBackStack(null)
 					.commit();

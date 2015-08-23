@@ -2,4 +2,6 @@
 <resources>
     <dimen name="login_edit_username_side_padding">30dp</dimen>
     <dimen name="global_status_bar_height">24dp</dimen>
+    <dimen name="register_text_view_title">20sp</dimen>
+    <dimen name="login_text_view_title">20sp</dimen>
 </resources>
