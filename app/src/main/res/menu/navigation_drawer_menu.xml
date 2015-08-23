@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title="Ahoj"></item>
-    <item android:title="Cau"></item>
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/drawer_menu_item_home"
+            android:checked="true"
+            android:icon="@drawable/menu_map"
+            android:title="@string/drawer_menu_item_map"/>
+        <item
+            android:id="@+id/drawer_menu_item_setting"
+            android:icon="@drawable/menu_setting"
+            android:title="@string/drawer_menu_item_setting"/>
+        <item
+            android:id="@+id/drawer_menu_item_about_me"
+            android:icon="@drawable/menu_about_me"
+            android:title="@string/drawer_menu_item_setting"/>
+        <item
+            android:id="@+id/drawer_menu_item_log_out"
+            android:icon="@drawable/menu_logout"
+            android:title="@string/drawer_menu_item_setting"/>
+    </group>
 </menu>

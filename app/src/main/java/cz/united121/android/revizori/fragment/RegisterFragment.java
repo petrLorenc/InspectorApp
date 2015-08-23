@@ -100,7 +100,7 @@ public class RegisterFragment extends BaseFragment {
 	@OnClick(R.id.register_fragment_button_login)
 	public void onClickLogin(View view) {
 		Log.d(TAG,"onClickLogin");
-		((LoginActivity) getActivity()).changeFragment(new LoginFragment());
+		((LoginActivity) getActivity()).changeFragment(LoginFragment.class.getName());
 	}
 
 	private void showError(){
