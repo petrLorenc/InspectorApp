@@ -1,17 +1,25 @@
 package cz.united121.android.revizori.activity.base;
 
 import android.app.Fragment;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
+import com.parse.ParseUser;
+
 import cz.united121.android.revizori.R;
+import cz.united121.android.revizori.activity.LoginActivity;
 import cz.united121.android.revizori.fragment.FullMapFragment;
 import cz.united121.android.revizori.fragment.LoginFragment;
+import cz.united121.android.revizori.fragment.SettingFragment;
 import cz.united121.android.revizori.util.Util;
 
 /**
@@ -23,7 +31,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 
 	protected DrawerLayout mDrawerLayout;
 	protected NavigationView mNavigationView;
-	protected Fragment mCurrentFragment;
     /**
      * returns the name of the fragment to be instantiated
      *
@@ -46,7 +53,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 
         if(fragment == null){
             fragment = Fragment.instantiate(this,fragmentName);
-			mCurrentFragment = fragment;
             getFragmentManager()
                     .beginTransaction()
                     .add(R.id.fragment_place, fragment, fragment.getClass().getName())
@@ -57,14 +63,17 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 					.add(R.id.fragment_place, fragment, fragment.getClass().getName())
 					.commit();
 		}
-		mCurrentFragment = fragment;
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
 		mNavigationView.setNavigationItemSelectedListener(this);
 
     }
 
+
     public void changeFragment(String toFragment){
+		Log.d(TAG, "onNavigationItemSelected");
+		Fragment mCurrentFragment = getFragmentManager().findFragmentById(R.id
+				.fragment_place);
 		if(mCurrentFragment.getClass().getName() == toFragment){
 			return;
 		}
@@ -74,21 +83,18 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 			fragment = Fragment.instantiate(this,toFragment);
             getFragmentManager().beginTransaction()
                     .setCustomAnimations(
-                            R.animator.card_flip_right_in, R.animator.card_flip_right_out,
-                            R.animator.card_flip_left_in, R.animator.card_flip_left_out)
+                            R.animator.fragment_slide_in, R.animator.fragment_slide_out,0,0)
                     .replace(R.id.fragment_place, fragment)
                     .addToBackStack(null)
                     .commit();
         }else{
 			getFragmentManager().beginTransaction()
                     .setCustomAnimations(
-                            R.animator.card_flip_right_in, R.animator.card_flip_right_out,
-                            R.animator.card_flip_left_in, R.animator.card_flip_left_out)
+							R.animator.fragment_slide_in, R.animator.fragment_slide_out,0,0)
 					.replace(R.id.fragment_place,fragment)
 					.addToBackStack(null)
 					.commit();
 		}
-		mCurrentFragment = fragment;
     }
 
 	@Override
@@ -112,7 +118,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 				break;
 
 			case R.id.drawer_menu_item_setting:
-				Toast.makeText(BaseActivity.this, "Make a Toast", Toast.LENGTH_SHORT).show();
+				changeFragment(SettingFragment.class.getName());
 				break;
 
 			case R.id.drawer_menu_item_about_me:
@@ -120,11 +126,30 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 				break;
 
 			case R.id.drawer_menu_item_log_out:
-				Toast.makeText(BaseActivity.this, "Logout", Toast.LENGTH_SHORT).show();
+				startActivity(new Intent(this, LoginActivity.class));
+				ParseUser.logOutInBackground();
+				this.finish();
 				break;
 		}
 		menuItem.setChecked(true);
 		mDrawerLayout.closeDrawers();
 		return true;
+	}
+
+	@Override
+	public void onBackPressed() {
+		//super.onBackPressed(); // after that I cant finnish this clicking back button
+		Log.d(TAG, "onBackPressed");
+		Util.hideSoftKeyboard(this);
+		Snackbar.make(findViewById(R.id.main_content_frame),getString(R.string.snacbar_back_button_message),Snackbar.LENGTH_SHORT)
+				.setAction("Ano", new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Log.d(TAG, "onClick");
+						finish();
+					}
+				})
+				.setActionTextColor(getResources().getColor(R.color.colorDanger))
+				.show();
 	}
 }

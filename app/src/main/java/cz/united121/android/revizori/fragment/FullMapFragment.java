@@ -39,6 +39,8 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
     private MapFragment mMapFragment;
     private GoogleMap googleMap;
 
+	private static View cachedView;
+
     @Override
     public int getLayout() {
         return R.layout.fragment_map;
@@ -46,9 +48,11 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-
-		ButterKnife.bind(this,view);
+		Log.d(TAG, "onCreateView");
+        if(cachedView == null) {
+			cachedView = super.onCreateView(inflater, container, savedInstanceState);
+		}
+		ButterKnife.bind(this,cachedView);
 
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addConnectionCallbacks(this)
@@ -59,18 +63,27 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
         mMapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         mMapFragment.getMapAsync(this);
 
-        return view;
+
+        return cachedView;
     }
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
+		Log.d(TAG, "onDestroyView");
+		super.onDestroyView();
         if(mGoogleApiClient != null){
             mGoogleApiClient.disconnect();
         }
     }
 
-    @Override
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		Log.d(TAG, "onDestroy");
+		cachedView = null;
+	}
+
+	@Override
     public void onConnected(Bundle bundle) {
         Log.d(TAG, "onConnected");
         // Everything is OK
@@ -97,6 +110,7 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+		Log.d(TAG, "onMapReady");
         this.googleMap = googleMap;
         googleMap.setMyLocationEnabled(true);
         mGoogleApiClient.connect();

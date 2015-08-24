@@ -1,5 +1,6 @@
 package cz.united121.android.revizori.activity.base;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -29,5 +30,38 @@ public abstract class BaseActivityNoDrawer extends BaseActivity {
 		Log.d(TAG, "onBackPressed");
 		Util.hideSoftKeyboard(this);
 		getFragmentManager().popBackStack();
+	}
+
+	/**
+	 * Login screen
+	 * @param toFragment
+	 */
+	@Override
+	public void changeFragment(String toFragment){
+		Fragment mCurrentFragment = getFragmentManager().findFragmentById(R.id
+				.fragment_place);
+		if(mCurrentFragment.getClass().getName() == toFragment){
+			return;
+		}
+		Util.hideSoftKeyboard(this);
+		Fragment fragment = getFragmentManager().findFragmentByTag(toFragment);
+		if(fragment == null){
+			fragment = Fragment.instantiate(this,toFragment);
+			getFragmentManager().beginTransaction()
+					.setCustomAnimations(
+							R.animator.card_flip_right_in, R.animator.card_flip_right_out,
+							R.animator.card_flip_left_in, R.animator.card_flip_left_out)
+					.replace(R.id.fragment_place, fragment)
+					.addToBackStack(null)
+					.commit();
+		}else{
+			getFragmentManager().beginTransaction()
+					.setCustomAnimations(
+							R.animator.card_flip_right_in, R.animator.card_flip_right_out,
+							R.animator.card_flip_left_in, R.animator.card_flip_left_out)
+					.replace(R.id.fragment_place,fragment)
+					.addToBackStack(null)
+					.commit();
+		}
 	}
 }
