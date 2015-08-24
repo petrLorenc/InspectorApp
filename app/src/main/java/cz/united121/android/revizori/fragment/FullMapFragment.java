@@ -1,7 +1,12 @@
 package cz.united121.android.revizori.fragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,13 +23,19 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
+import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
+import com.oguzdev.circularfloatingactionmenu.library.animation.MenuAnimationHandler;
 import com.parse.ParseGeoPoint;
+
+import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cz.united121.android.revizori.R;
 import cz.united121.android.revizori.fragment.base.BaseFragment;
 import cz.united121.android.revizori.model.ReportInspector;
+import cz.united121.android.revizori.ui.AfterSnackBarBehavior;
 
 /**
  * TODO add class description
@@ -40,6 +51,7 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
     private GoogleMap googleMap;
 
 	private static View cachedView;
+	private static ArrayList<View> unmovedView;
 
     @Override
     public int getLayout() {
@@ -63,6 +75,7 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
         mMapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         mMapFragment.getMapAsync(this);
 
+		setMenu();
 
         return cachedView;
     }
@@ -71,6 +84,8 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
     public void onDestroyView() {
 		Log.d(TAG, "onDestroyView");
 		super.onDestroyView();
+		//AfterSnackBarBehavior.mStaticViewToMove.get(0).setVisibility(View.GONE);
+		//AfterSnackBarBehavior.mStaticViewToMove.remove(0);
         if(mGoogleApiClient != null){
             mGoogleApiClient.disconnect();
         }
@@ -116,7 +131,7 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
         mGoogleApiClient.connect();
     }
 
-	@OnClick(R.id.reporting_insperctor_image_view)
+	@OnClick(R.id.fab_reporting_insperctor)
 	public void reportingInspector(View view) {
 		Log.d(TAG,"reportingInspector");
 		Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -133,5 +148,79 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
 								(),location.getLongitude())));
 			}
 		}
+	}
+
+	private void setMenu(){
+		// in Activity Context
+		FloatingActionButton actionButton = (FloatingActionButton) cachedView.findViewById(R.id
+				.fab_reporting_insperctor);
+
+		SubActionButton.Builder itemBuilder = new SubActionButton.Builder(getActivity());
+
+
+
+		// Creating items
+		ImageView itemIcon = new ImageView(getActivity());
+		//itemIcon.pare
+//		ImageView itemIcon2 = new ImageView(getActivity());
+//		ImageView itemIcon3 = new ImageView(getActivity());
+
+		CoordinatorLayout coordinatorLayout = (CoordinatorLayout) cachedView.findViewById
+				(R.id.fragment_map_coordinator_layout);
+		coordinatorLayout.addView(itemIcon);
+
+		itemIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.menu_map));
+		itemIcon.setLayoutParams(new ViewGroup.LayoutParams(75, 75));
+//		itemIcon2.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.menu_about_me));
+//		itemIcon3.setImageDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.menu_logout));
+
+		//SubActionButton button1 = itemBuilder.setContentView(itemIcon).build();
+//		SubActionButton button2 = itemBuilder.setContentView(itemIcon2).build();
+//		SubActionButton button3 = itemBuilder.setContentView(itemIcon3).build();
+
+//		button3.setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//				Log.d(TAG, "onClick");
+//				Toast.makeText(getActivity(), "BUM", Toast.LENGTH_SHORT).show();
+//			}
+//		});
+
+		//AfterSnackBarBehavior.mStaticViewToMove.add(itemIcon);
+
+//		cachedView.findViewById(R.id.image_image).remove
+		FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(getActivity())
+//				.addSubActionView(cachedView.findViewById(R.id.image_image))
+				//.addSubActionView(button2)
+				//.addSubActionView(button3)
+				.addSubActionView(itemIcon)
+				.attachTo(actionButton)
+				.build();
+	}
+
+	private class MyFloatingActionMenuBuilder extends FloatingActionMenu.Builder{
+
+		public MyFloatingActionMenuBuilder(Activity activity) {
+			super(activity);
+		}
+
+		@Override
+		public FloatingActionMenu.Builder addSubActionView(View subActionView, int width, int height) {
+			Log.d(TAG, "addSubActionView");
+			return super.addSubActionView(subActionView, width, height);
+		}
+
+		@Override
+		public FloatingActionMenu.Builder addSubActionView(View subActionView) {
+			Log.d(TAG, "addSubActionView");
+			return super.addSubActionView(subActionView);
+		}
+
+		@Override
+		public FloatingActionMenu.Builder addSubActionView(int resId, Context context) {
+			Log.d(TAG, "addSubActionView");
+			return super.addSubActionView(resId, context);
+		}
+
 	}
 }

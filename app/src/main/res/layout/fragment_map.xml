@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_map_coordinator_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
     <fragment
+        android:id="@+id/map"
         android:name="com.google.android.gms.maps.MapFragment"
-              android:id="@+id/map"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"/>
-    <ImageView
-        android:id="@+id/reporting_insperctor_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <cz.united121.android.revizori.ui.MyFAB
+        android:id="@+id/fab_reporting_insperctor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="20dp"
         android:src="@drawable/reporting_insperctor_image"
-        android:layout_gravity="center|bottom"
-        android:padding="20dp"/>
-</FrameLayout>
+        app:borderWidth="0dp"/>
+</android.support.design.widget.CoordinatorLayout>
