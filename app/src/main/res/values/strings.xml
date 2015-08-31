@@ -17,4 +17,6 @@
     <string name="drawer_menu_item_about_me">O mně</string>
     <string name="drawer_menu_item_log_out">Odhlásit</string>
     <string name="snacbar_back_button_message">Opravdu chcete ukončit aplikaci.</string>
+    <string name="login_have_account">Již mám ůčet</string>
+    <string name="choose_metro_fragment">Vyberte, prosím, stanici metra:</string>
 </resources>

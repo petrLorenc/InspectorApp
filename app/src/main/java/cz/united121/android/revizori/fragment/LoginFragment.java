@@ -23,6 +23,7 @@ import butterknife.OnClick;
 import cz.united121.android.revizori.BuildConfig;
 import cz.united121.android.revizori.R;
 import cz.united121.android.revizori.activity.MapActivity;
+import cz.united121.android.revizori.activity.base.BaseActivity;
 import cz.united121.android.revizori.fragment.base.BaseFragment;
 import cz.united121.android.revizori.util.Checker;
 
@@ -56,6 +57,7 @@ public class LoginFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  super.onCreateView(inflater, container, savedInstanceState);
+		Log.d(TAG,"onCreateView");
 		ButterKnife.bind(this, view);
 
 		if(BuildConfig.DEBUG){
@@ -93,5 +95,11 @@ public class LoginFragment extends BaseFragment {
 				}
 			}
 		});
+	}
+
+	@OnClick(R.id.login_fragment_button_already_have_account)
+	public void onClickHaveAccount(View view) {
+		Log.d(TAG, "onClickLogin");
+		((BaseActivity) getActivity()).changeFragment(RegisterFragment.class.getName());
 	}
 }

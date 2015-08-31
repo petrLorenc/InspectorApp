@@ -20,7 +20,7 @@ public class LoginActivity extends BaseActivityNoDrawer {
     @Override
     protected String getFragmentName() {
         if(ParseUser.getCurrentUser() == null){
-			return RegisterFragment.class.getName();
+			return LoginFragment.class.getName();
 		}else{
 			startActivity(new Intent(LoginActivity.this, MapActivity.class));
 			return null; // this finish actual activity

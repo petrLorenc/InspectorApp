@@ -4,4 +4,5 @@
     <dimen name="global_status_bar_height">24dp</dimen>
     <dimen name="register_text_view_title">20sp</dimen>
     <dimen name="login_text_view_title">20sp</dimen>
+    <dimen name="choose_metro_title_size">20sp</dimen>
 </resources>

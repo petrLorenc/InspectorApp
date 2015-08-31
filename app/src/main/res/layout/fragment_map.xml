@@ -12,12 +12,43 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <cz.united121.android.revizori.ui.MyFAB
-        android:id="@+id/fab_reporting_insperctor"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:id="@+id/reporting_insperctor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="20dp"
+        android:src="@drawable/reporting_inspector"/>
+
+    <ImageView
+        android:id="@+id/reporting_insperctor_bus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|left"
+        android:layout_margin="20dp"
+        android:visibility="invisible"
+        android:src="@drawable/reporting_bus"/>
+
+    <ImageView
+        android:id="@+id/reporting_insperctor_tram"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="20dp"
+        android:visibility="invisible"
+        android:src="@drawable/reporting_tram"/>
+
+    <ImageView
+        android:id="@+id/reporting_insperctor_metro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_margin="20dp"
-        android:src="@drawable/reporting_insperctor_image"
-        app:borderWidth="0dp"/>
+        android:visibility="invisible"
+        android:src="@drawable/reporting_metro"/>
+
 </android.support.design.widget.CoordinatorLayout>

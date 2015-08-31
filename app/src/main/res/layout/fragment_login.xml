@@ -65,6 +65,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/login_button_action_login"/>
+
+            <Button
+                android:id="@+id/login_fragment_button_already_have_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_have_account"/>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

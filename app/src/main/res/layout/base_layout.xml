@@ -10,15 +10,14 @@
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/main_content_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <android.support.design.widget.CoordinatorLayout
+        <FrameLayout
             android:id="@+id/fragment_place"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="cz.united121.android.revizori.ui.AfterSnackBarBehavior">
-        </android.support.design.widget.CoordinatorLayout>
+        </FrameLayout>
 
     </android.support.design.widget.CoordinatorLayout>
 
