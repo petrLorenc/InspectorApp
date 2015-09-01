@@ -25,7 +25,7 @@ public class StationsViewAdapter extends CursorViewAdapter<StationsViewAdapter.V
 
 	public StationsViewAdapter(Context context, Cursor cursor) {
 		super(context, cursor);
-		Log.d(TAG,"StationsViewAdapter");
+		Log.d(TAG, "StationsViewAdapter");
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class StationsViewAdapter extends CursorViewAdapter<StationsViewAdapter.V
 		return viewHolder;
 	}
 
-	public static class ViewHolder extends RecyclerView.ViewHolder {
+	public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 		@Bind(R.id.rv_row_logo)
 		public ImageView mStationLogo;
 
@@ -56,6 +56,13 @@ public class StationsViewAdapter extends CursorViewAdapter<StationsViewAdapter.V
 			super(itemView);
 			Log.d(TAG, "ViewHolder constuctor");
 			ButterKnife.bind(this,itemView);
+			itemView.setOnClickListener(this);
+		}
+
+		@Override
+		public void onClick(View v) {
+			Log.d(TAG, "onClick");
+			Log.d(TAG, "v" + getAdapterPosition() + " name: " + mNameOfStation.getText());
 		}
 	}
 }

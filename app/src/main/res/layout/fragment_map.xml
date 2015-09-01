@@ -22,6 +22,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
         android:layout_margin="20dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?android:attr/selectableItemBackground"
         android:src="@drawable/reporting_inspector"/>
 
     <ImageView
@@ -31,6 +34,9 @@
         android:layout_gravity="bottom|left"
         android:layout_margin="20dp"
         android:visibility="invisible"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?android:attr/selectableItemBackground"
         android:src="@drawable/reporting_bus"/>
 
     <ImageView
@@ -40,6 +46,9 @@
         android:layout_gravity="bottom|center"
         android:layout_margin="20dp"
         android:visibility="invisible"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?android:attr/selectableItemBackground"
         android:src="@drawable/reporting_tram"/>
 
     <ImageView
@@ -49,6 +58,9 @@
         android:layout_gravity="bottom|right"
         android:layout_margin="20dp"
         android:visibility="invisible"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?android:attr/selectableItemBackground"
         android:src="@drawable/reporting_metro"/>
 
 </android.support.design.widget.CoordinatorLayout>
