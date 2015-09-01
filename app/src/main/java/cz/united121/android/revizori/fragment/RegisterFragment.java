@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.ParseException;
+import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
 import butterknife.Bind;
@@ -25,7 +26,6 @@ import cz.united121.android.revizori.activity.LoginActivity;
 import cz.united121.android.revizori.activity.MapActivity;
 import cz.united121.android.revizori.activity.base.BaseActivity;
 import cz.united121.android.revizori.fragment.base.BaseFragment;
-import cz.united121.android.revizori.model.User;
 import cz.united121.android.revizori.util.Checker;
 
 /**
@@ -82,7 +82,10 @@ public class RegisterFragment extends BaseFragment {
 				&& Checker.checkPassword(password)){
 			layout_content.setVisibility(View.GONE);
 			progress_bar.setVisibility(View.VISIBLE);
-			User user = new User(username,password,email);
+			ParseUser user = new ParseUser();
+			user.setUsername(username);
+			user.setPassword(password);
+			user.setEmail(email);
 			user.signUpInBackground(new SignUpCallback() {
 				@Override
 				public void done(ParseException e) {

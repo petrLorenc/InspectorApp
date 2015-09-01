@@ -1,11 +1,9 @@
 package cz.united121.android.revizori.ui.helper;
 
-import android.content.Context;
+import android.app.Activity;
 import android.database.Cursor;
-import android.database.DataSetObserver;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.ViewGroup;
 
 /**
  * TODO add class description
@@ -15,13 +13,13 @@ public abstract class CursorViewAdapter<VH extends RecyclerView.ViewHolder> exte
 		.Adapter<VH> {
 	public static final String TAG = CursorViewAdapter.class.getName();
 
-	private Context mContext;
+	protected Activity mActivity;
 	private Cursor mCursor;
 
-	public CursorViewAdapter(Context context, Cursor cursor) {
+	public CursorViewAdapter(Activity activity, Cursor cursor) {
 		super();
 		Log.d(TAG, "CursorViewAdapter constuctor");
-		mContext = context;
+		mActivity = activity;
 		mCursor = cursor;
 
 	}

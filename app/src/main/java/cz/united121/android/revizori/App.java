@@ -7,7 +7,6 @@ import com.parse.Parse;
 import com.parse.ParseObject;
 
 import cz.united121.android.revizori.model.ReportInspector;
-import cz.united121.android.revizori.model.User;
 
 /**
  * TODO add class description
@@ -27,7 +26,6 @@ public class App extends Application {
         Parse.enableLocalDatastore(this);
 
         ParseObject.registerSubclass(ReportInspector.class);
-        ParseObject.registerSubclass(User.class);
         Parse.initialize(this, mApplicationID, mClientKey);
     }
 }

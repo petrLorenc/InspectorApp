@@ -1,7 +1,8 @@
 package cz.united121.android.revizori.ui;
 
-import android.content.Context;
+import android.app.Activity;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,9 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cz.united121.android.revizori.R;
+import cz.united121.android.revizori.activity.base.BaseActivity;
+import cz.united121.android.revizori.fragment.SummaryFragment;
+import cz.united121.android.revizori.model.ReportInspector;
 import cz.united121.android.revizori.model.Station;
 import cz.united121.android.revizori.ui.helper.CursorViewAdapter;
 
@@ -23,8 +27,8 @@ import cz.united121.android.revizori.ui.helper.CursorViewAdapter;
 public class StationsViewAdapter extends CursorViewAdapter<StationsViewAdapter.ViewHolder> {
 	public static final String TAG = StationsViewAdapter.class.getName();
 
-	public StationsViewAdapter(Context context, Cursor cursor) {
-		super(context, cursor);
+	public StationsViewAdapter(Activity activity, Cursor cursor) {
+		super(activity, cursor);
 		Log.d(TAG, "StationsViewAdapter");
 	}
 
@@ -34,6 +38,7 @@ public class StationsViewAdapter extends CursorViewAdapter<StationsViewAdapter.V
 		Station station = Station.constructFromCursor(cursor);
 		viewHolder.mNameOfStation.setText(station.getName());
 		viewHolder.mStationLogo.setImageResource(station.getPicture());
+		viewHolder.mStation = station;
 	}
 
 	@Override
@@ -41,7 +46,7 @@ public class StationsViewAdapter extends CursorViewAdapter<StationsViewAdapter.V
 		Log.d(TAG, "onCreateViewHolder");
 		View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout
 				.recycler_view_row_stations,viewGroup,false);
-		ViewHolder viewHolder = new ViewHolder(view);
+		ViewHolder viewHolder = new ViewHolder(view, mActivity);
 		return viewHolder;
 	}
 
@@ -52,17 +57,30 @@ public class StationsViewAdapter extends CursorViewAdapter<StationsViewAdapter.V
 		@Bind(R.id.rv_row_name)
 		public TextView mNameOfStation;
 
-		public ViewHolder(View itemView) {
+		Activity mActivity;
+		public Station mStation;
+
+		public ViewHolder(View itemView, Activity activity) {
 			super(itemView);
 			Log.d(TAG, "ViewHolder constuctor");
-			ButterKnife.bind(this,itemView);
+			ButterKnife.bind(this, itemView);
 			itemView.setOnClickListener(this);
+			mActivity = activity;
 		}
 
 		@Override
 		public void onClick(View v) {
 			Log.d(TAG, "onClick");
 			Log.d(TAG, "v" + getAdapterPosition() + " name: " + mNameOfStation.getText());
+			if(mActivity instanceof BaseActivity){
+				Bundle bundle = new Bundle();
+				bundle.putDouble(SummaryFragment.BUNDLE_LATITUDE,mStation.getLatitude());
+				bundle.putDouble(SummaryFragment.BUNDLE_LONGITUDE,mStation.getLongtitude());
+				bundle.putString(SummaryFragment.BUNDLE_TYPEOFVEHICLE, ReportInspector
+						.TypeOfVehicle.METRO);
+				bundle.putString(SummaryFragment.BUNDLE_NAMEOFSTATION, mStation.getName());
+				((BaseActivity) mActivity).changeFragment(SummaryFragment.class.getName(),bundle);
+			}
 		}
 	}
 }
