@@ -19,4 +19,13 @@
     <string name="snacbar_back_button_message">Opravdu chcete ukončit aplikaci.</string>
     <string name="login_have_account">Již mám ůčet</string>
     <string name="choose_metro_fragment">Vyberte, prosím, stanici metra:</string>
+    <string name="full_map_requesting_enabling_GPS_start">Prosím zapněte GPS nebo jinou službu poskytujicí Vaší
+        polohu, jinak nebude umožněna plnná funkčnost aplikace.</string>
+    <string name="full_map_requesting_enabling_GPS_report">Prosím zapněte GPS nebo jinou službu poskytujicí
+        Vaší polohu, jinak nebude umožněno nahlášení revizora.</string>
+    <string name="full_map_problem_with_position">Bohužel nebylo možné zaznamenat Vaši polohu.
+        Opakujte akci prosím pozdějí. Omlouváme se a děkujeme. </string>
+    <string name="summary_button_back_to_map">Uložit a zpátky na mapu</string>
+    <string name="summary_thanks_and_request">Děkujeme za Váše hlášení revizora. Určitě bude ostatními uživateli oceněno. Dále bych Vás chtěl požádat o poskytnutí krátkého komentáře týkajícího se Vašeho hlášení (jak revizor vypadal, cislo linkz, blizkost zastavky apod.)</string>
+    <string name="summerry_hint_comment_text_edit">Komentář</string>
 </resources>

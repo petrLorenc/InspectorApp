@@ -4,8 +4,33 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
     <TextView
+        android:id="@+id/summary_text_view_thanks"
+        android:layout_width="match_parent"
+        android:layout_margin="5dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/summary_thanks_and_request"/>
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/login_edit_username_side_padding"
+        android:paddingRight="@dimen/login_edit_username_side_padding">
+    <EditText
         android:id="@+id/summary_text_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"/>
+        android:paddingTop="@dimen/summary_fragment_top_botton_padding"
+        android:paddingBottom="@dimen/summary_fragment_top_botton_padding"
+        android:inputType="textMultiLine"
+        android:layout_height="wrap_content"
+        android:gravity="top|left"
+        android:scrollbars="vertical"
+        android:hint="@string/summerry_hint_comment_text_edit"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/summary_to_map_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:text="@string/summary_button_back_to_map"/>
 </LinearLayout>

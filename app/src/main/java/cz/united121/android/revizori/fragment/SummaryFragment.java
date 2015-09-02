@@ -13,7 +13,9 @@ import com.parse.ParseUser;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cz.united121.android.revizori.R;
+import cz.united121.android.revizori.activity.base.BaseActivity;
 import cz.united121.android.revizori.fragment.base.BaseFragment;
 import cz.united121.android.revizori.model.ReportInspector;
 
@@ -52,9 +54,11 @@ public class SummaryFragment extends BaseFragment {
 			mSummary.setText("Nic");
 			return view;
 		}
-		passArg.getDouble(BUNDLE_LATITUDE, 0.0);
-		passArg.getDouble(BUNDLE_LONGITUDE, 0.0);
-		passArg.getString(BUNDLE_TYPEOFVEHICLE, ReportInspector.TypeOfVehicle.BUS); // default is BUS
+		double latitude = passArg.getDouble(BUNDLE_LATITUDE, 0.0);
+		double longitude = passArg.getDouble(BUNDLE_LONGITUDE, 0.0);
+		String typeOfVehicle = passArg.getString(BUNDLE_TYPEOFVEHICLE, ReportInspector.TypeOfVehicle
+				.BUS); // default is BUS
+		String nameOfStation = passArg.getString(BUNDLE_NAMEOFSTATION,"Neznámá"); // only for metro
 
 		mReportInspector = new ReportInspector(
 				ParseUser.getCurrentUser(),
@@ -62,9 +66,17 @@ public class SummaryFragment extends BaseFragment {
 						          passArg.getDouble(BUNDLE_LONGITUDE, 0.0)),
 				passArg.getString(BUNDLE_TYPEOFVEHICLE,ReportInspector.TypeOfVehicle.BUS));
 				// default is BUS);
-
-		mSummary.setText(passArg.getString(BUNDLE_NAMEOFSTATION,"Neznámá"));
+		mSummary.setText( nameOfStation + " LAT : " + latitude + " LONG : " + longitude + " TYPE " +
+				": " + typeOfVehicle);
+		mReportInspector.setComment(mSummary.getText().toString());
+		mReportInspector.setNameOfStation(nameOfStation);
+		mReportInspector.saveEventually();
 
 		return view;
+	}
+
+	@OnClick(R.id.summary_to_map_button)
+	public void onClickBackToMap(View view){
+		((BaseActivity) getActivity()).changeFragment(FullMapFragment.class.getName());
 	}
 }

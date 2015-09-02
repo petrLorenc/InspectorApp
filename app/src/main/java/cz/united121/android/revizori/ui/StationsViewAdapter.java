@@ -19,12 +19,13 @@ import cz.united121.android.revizori.fragment.SummaryFragment;
 import cz.united121.android.revizori.model.ReportInspector;
 import cz.united121.android.revizori.model.Station;
 import cz.united121.android.revizori.ui.helper.CursorViewAdapter;
+import cz.united121.android.revizori.ui.helper.FilterableViewAdapter;
 
 /**
- * TODO add class description
+ * Cares about starting summary framgnet when we choose metro
  * Created by Petr Lorenc[Lorenc55Petr@seznam.cz] on {8/30/2015}
  **/
-public class StationsViewAdapter extends CursorViewAdapter<StationsViewAdapter.ViewHolder> {
+public class StationsViewAdapter extends FilterableViewAdapter<StationsViewAdapter.ViewHolder> {
 	public static final String TAG = StationsViewAdapter.class.getName();
 
 	public StationsViewAdapter(Activity activity, Cursor cursor) {
@@ -33,9 +34,9 @@ public class StationsViewAdapter extends CursorViewAdapter<StationsViewAdapter.V
 	}
 
 	@Override
-	public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor) {
+	public void onBindViewHolder(ViewHolder viewHolder, int position) {
 		Log.d(TAG, "onBindViewHolder");
-		Station station = Station.constructFromCursor(cursor);
+		Station station = mVisibleStations.get(position);
 		viewHolder.mNameOfStation.setText(station.getName());
 		viewHolder.mStationLogo.setImageResource(station.getPicture());
 		viewHolder.mStation = station;

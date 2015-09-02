@@ -5,6 +5,10 @@ import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import java.util.List;
+
+import cz.united121.android.revizori.model.Station;
+
 /**
  * TODO add class description
  * Created by Petr Lorenc[Lorenc55Petr@seznam.cz] on {8/30/2015}
@@ -16,12 +20,15 @@ public abstract class CursorViewAdapter<VH extends RecyclerView.ViewHolder> exte
 	protected Activity mActivity;
 	private Cursor mCursor;
 
+	protected List<Station> mAllStations;
+	protected List<Station> mVisibleStations;
+
+
 	public CursorViewAdapter(Activity activity, Cursor cursor) {
 		super();
 		Log.d(TAG, "CursorViewAdapter constuctor");
 		mActivity = activity;
 		mCursor = cursor;
-
 	}
 
 	@Override

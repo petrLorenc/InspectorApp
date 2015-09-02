@@ -84,7 +84,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         Fragment fragment = getFragmentManager().findFragmentByTag(toFragment);
         if(fragment == null){
 			fragment = Fragment.instantiate(this,toFragment);
-			fragment.setArguments(args);
+			if(args != null){
+				fragment.setArguments(args);
+			}
             getFragmentManager().beginTransaction()
                     .setCustomAnimations(
                             R.animator.fragment_slide_in, R.animator.fragment_slide_out,0,0)
@@ -92,7 +94,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
                     .addToBackStack(null)
                     .commit();
         }else{
-			fragment.setArguments(args);
+			if(args != null){
+				fragment.setArguments(args);
+			}
 			getFragmentManager().beginTransaction()
                     .setCustomAnimations(
 							R.animator.fragment_slide_in, R.animator.fragment_slide_out,0,0)
@@ -157,4 +161,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 				.setActionTextColor(getResources().getColor(R.color.colorDanger))
 				.show();
 	}
+
+	
 }

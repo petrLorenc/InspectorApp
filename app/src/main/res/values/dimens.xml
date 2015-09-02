@@ -5,4 +5,5 @@
     <dimen name="register_text_view_title">20sp</dimen>
     <dimen name="login_text_view_title">20sp</dimen>
     <dimen name="choose_metro_title_size">20sp</dimen>
+    <dimen name="summary_fragment_top_botton_padding">20dp</dimen>
 </resources>

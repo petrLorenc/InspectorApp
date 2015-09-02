@@ -9,7 +9,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * TODO add class description
+ * After set have to call saving function
  * Created by Petr Lorenc[Lorenc55Petr@seznam.cz] on {8/21/2015}
  **/
 @ParseClassName("ReportInspector")
@@ -21,12 +21,14 @@ public class ReportInspector extends ParseObject {
 	private static final String USER = "User";
 	private static final String COMMENT = "Comment";
 	private static final String TYPEOFVEHICLE = "TypeOfVehicle";
+	private static final String NAME_OF_STATION = "NameOfStation";
 
 	private ParseUser mUser;
 	private ParseGeoPoint mLocation;
 	private TimeZone mTimeZone; // for further extension
 	private TypeOfVehicle mTypeOfVehicle;
 	private String mComment;
+	private String mNameOfStation;
 
 	public ReportInspector() {
 	}
@@ -37,12 +39,14 @@ public class ReportInspector extends ParseObject {
 		put(TIMEZONE, TimeZone.getDefault().getDisplayName(false, TimeZone.SHORT, Locale
 				.getDefault()));
 		put(TYPEOFVEHICLE, typeOfVehicle);
-		this.saveInBackground();
 	}
 
 	public void setComment(String comment) {
 		put(COMMENT, comment);
-		this.saveInBackground();
+	}
+
+	public void setNameOfStation(String nameOfStation) {
+		put(NAME_OF_STATION, nameOfStation);
 	}
 
 	public ParseGeoPoint getLocation() {
