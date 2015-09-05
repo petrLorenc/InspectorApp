@@ -19,10 +19,8 @@
     <string name="snacbar_back_button_message">Opravdu chcete ukončit aplikaci.</string>
     <string name="login_have_account">Již mám ůčet</string>
     <string name="choose_metro_fragment">Vyberte, prosím, stanici metra:</string>
-    <string name="full_map_requesting_enabling_GPS_start">Prosím zapněte GPS nebo jinou službu poskytujicí Vaší
-        polohu, jinak nebude umožněna plnná funkčnost aplikace.</string>
-    <string name="full_map_requesting_enabling_GPS_report">Prosím zapněte GPS nebo jinou službu poskytujicí
-        Vaší polohu, jinak nebude umožněno nahlášení revizora.</string>
+    <string name="full_map_requesting_enabling_GPS_start">Prosím zapněte GPS, jinak nebude umožněna plnná funkčnost aplikace.</string>
+    <string name="full_map_requesting_enabling_GPS_report">Prosím zapněte GPS, jinak nebude umožněno nahlášení revizora.</string>
     <string name="full_map_problem_with_position">Bohužel nebylo možné zaznamenat Vaši polohu.
         Opakujte akci prosím pozdějí. Omlouváme se a děkujeme. </string>
     <string name="summary_button_back_to_map">Uložit a zpátky na mapu</string>

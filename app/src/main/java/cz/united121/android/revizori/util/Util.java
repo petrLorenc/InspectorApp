@@ -26,7 +26,14 @@ public class Util {
 		}
 	}
 
+	public static boolean shovingDiaglog = false;
+
 	public static void makeAlertDialogGPS(final Activity actualActivity, String message){
+		if(shovingDiaglog == false){
+			shovingDiaglog = true;
+		}else{
+			return;
+		}
 		AlertDialog.Builder builder = new AlertDialog.Builder(actualActivity);
 		final String action = Settings.ACTION_LOCATION_SOURCE_SETTINGS;
 
@@ -35,12 +42,14 @@ public class Util {
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface d, int id) {
 								actualActivity.startActivity(new Intent(action));
+								shovingDiaglog = false;
 								d.dismiss();
 							}
 						})
 				.setNegativeButton("Ignorovat",
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface d, int id) {
+								shovingDiaglog = false;
 								d.cancel();
 							}
 						});
@@ -48,11 +57,17 @@ public class Util {
 	}
 
 	public static void makeAlertDialogOnlyOK(final Activity actualActivity, String message){
+		if(shovingDiaglog == false){
+			shovingDiaglog = true;
+		}else{
+			return;
+		}
 		AlertDialog.Builder builder = new AlertDialog.Builder(actualActivity);
 		builder.setMessage(message)
 				.setPositiveButton("OK",
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface d, int id) {
+								shovingDiaglog = false;
 								d.dismiss();
 							}
 						});

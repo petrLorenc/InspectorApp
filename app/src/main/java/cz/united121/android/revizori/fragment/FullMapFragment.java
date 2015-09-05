@@ -4,6 +4,7 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import android.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -26,6 +29,7 @@ import cz.united121.android.revizori.R;
 import cz.united121.android.revizori.activity.MapActivity;
 import cz.united121.android.revizori.activity.base.BaseActivity;
 import cz.united121.android.revizori.fragment.base.BaseFragment;
+import cz.united121.android.revizori.listeners.MyLocationListener;
 import cz.united121.android.revizori.model.ReportInspector;
 import cz.united121.android.revizori.util.Util;
 
@@ -33,7 +37,8 @@ import cz.united121.android.revizori.util.Util;
  * TODO add class description
  * Created by Petr Lorenc[Lorenc55Petr@seznam.cz] on {13.8.2015}
  */
-public class FullMapFragment extends BaseFragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback{
+public class FullMapFragment extends BaseFragment implements GoogleApiClient.ConnectionCallbacks,
+		GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback{
     public static final String TAG = FullMapFragment.class.getName();
 
 	private boolean mStatus = false;
@@ -42,6 +47,7 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
     private MapFragment mMapFragment;
     private GoogleMap googleMap;
 	private LocationManager mLocationManager;
+	private MyLocationListener mMyLocationListener;
 
 	private static View cachedView;
 
@@ -65,10 +71,10 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		Log.d(TAG, "onCreateView");
-        if(cachedView == null) {
+		if (cachedView == null) {
 			cachedView = super.onCreateView(inflater, container, savedInstanceState);
 		}
-		ButterKnife.bind(this,cachedView);
+		ButterKnife.bind(this, cachedView);
 
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addConnectionCallbacks(this)
@@ -80,6 +86,9 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
         mMapFragment.getMapAsync(this);
 
 		mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+		mMyLocationListener = new MyLocationListener((BaseActivity) getActivity());
+		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0,
+				mMyLocationListener);
 
         return cachedView;
     }
@@ -89,7 +98,7 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
 		super.onResume();
 		Log.d(TAG, "onResume");
 		if(!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-			Util.makeAlertDialogGPS(getActivity(),getString(R.string.full_map_requesting_enabling_GPS_start));
+			Util.makeAlertDialogGPS(getActivity(), getString(R.string.full_map_requesting_enabling_GPS_start));
 		}
 	}
 
@@ -130,7 +139,6 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
         // The connection has been interrupted.
         // Disable any UI components that depend on Google APIs
         // until onConnected() is called.
-
 		mStatus = false;
     }
 
@@ -162,7 +170,7 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
 				mReportingMetro.setVisibility(View.GONE);
 			}
 		});
-        googleMap.setMyLocationEnabled(true);
+		this.googleMap.setMyLocationEnabled(true);
         mGoogleApiClient.connect();
     }
 
@@ -187,24 +195,16 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
 		}
 		//check if we can use last known position
 		Location location = null;
-		if(mGoogleApiClient != null
-				&
-				LocationServices.FusedLocationApi.getLocationAvailability(mGoogleApiClient)
-				.isLocationAvailable() == false
-				&
-				(location = LocationServices.FusedLocationApi
-						.getLastLocation (mGoogleApiClient)) != null){
+		//measurement of location was before 10 second
+		if((location = mMyLocationListener.getValidLocation()) != null){}
+		// of measurement of location is sufficient
+		else if((location = mMyLocationListener.getValidLocation(mGoogleApiClient)) != null){}
+		else{
 			Util.makeAlertDialogOnlyOK(getActivity(),getString(R.string.full_map_problem_with_position));
 			return;
 		}
 
-		Bundle bundle = new Bundle();
-		bundle.putDouble(SummaryFragment.BUNDLE_LATITUDE,location.getLatitude());
-		bundle.putDouble(SummaryFragment.BUNDLE_LONGITUDE,location.getLongitude());
-		bundle.putString(SummaryFragment.BUNDLE_TYPEOFVEHICLE, ReportInspector
-				.TypeOfVehicle.BUS);
-		//bundle.putString(SummaryFragment.BUNDLE_NAMEOFSTATION, mStation.getName());
-		((BaseActivity) getActivity()).changeFragment(SummaryFragment.class.getName(), bundle);
+		changeFragmentToSummary(location, ReportInspector.TypeOfVehicle.BUS);
 	}
 
 	@OnClick(R.id.reporting_insperctor_tram)
@@ -216,29 +216,29 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
 		}
 		//check if we can use last known position
 		Location location = null;
-		if(mGoogleApiClient != null
-				&
-				LocationServices.FusedLocationApi.getLocationAvailability(mGoogleApiClient)
-						.isLocationAvailable() == false
-				&
-				(location = LocationServices.FusedLocationApi
-						.getLastLocation (mGoogleApiClient)) != null){
-			Util.makeAlertDialogOnlyOK(getActivity(), getString(R.string.full_map_problem_with_position));
+		if((location = mMyLocationListener.getValidLocation()) != null){}
+		// of measurement of location is sufficient
+		else if((location = mMyLocationListener.getValidLocation(mGoogleApiClient)) != null){}
+		else{
+			Util.makeAlertDialogOnlyOK(getActivity(),getString(R.string.full_map_problem_with_position));
 			return;
 		}
-		Bundle bundle = new Bundle();
-		bundle.putDouble(SummaryFragment.BUNDLE_LATITUDE,location.getLatitude());
-		bundle.putDouble(SummaryFragment.BUNDLE_LONGITUDE,location.getLongitude());
-		bundle.putString(SummaryFragment.BUNDLE_TYPEOFVEHICLE, ReportInspector
-				.TypeOfVehicle.TRAM);
-		//bundle.putString(SummaryFragment.BUNDLE_NAMEOFSTATION, mStation.getName());
-		((BaseActivity) getActivity()).changeFragment(SummaryFragment.class.getName(), bundle);
+
+		changeFragmentToSummary(location, ReportInspector.TypeOfVehicle.TRAM);
 	}
 
 	@OnClick(R.id.reporting_insperctor_metro)
 	public void reportingInspectorMetro(View view) {
-		Log.d(TAG,"reportingInspectorMetro");
+		Log.d(TAG, "reportingInspectorMetro");
 		((MapActivity) getActivity()).changeFragment(MetroStationsFragment.class.getName());
 	}
 
+	private void changeFragmentToSummary(Location location, String typeOfVehicle){
+		Bundle bundle = new Bundle();
+		bundle.putDouble(SummaryFragment.BUNDLE_LATITUDE,location.getLatitude());
+		bundle.putDouble(SummaryFragment.BUNDLE_LONGITUDE,location.getLongitude());
+		bundle.putString(SummaryFragment.BUNDLE_TYPEOFVEHICLE, typeOfVehicle);
+		//bundle.putString(SummaryFragment.BUNDLE_NAMEOFSTATION, mStation.getName());
+		((BaseActivity) getActivity()).changeFragment(SummaryFragment.class.getName(), bundle);
+	}
 }

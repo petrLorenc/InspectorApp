@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.ParseUser;
@@ -67,6 +68,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 		mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
 		mNavigationView.setNavigationItemSelectedListener(this);
 
+		((TextView) findViewById(R.id.navigation_drawer_username)).setText(ParseUser
+				.getCurrentUser().getUsername());
     }
 
 	public void changeFragment(String toFragment){

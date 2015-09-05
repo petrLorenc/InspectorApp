@@ -3,15 +3,17 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:background="@color/primary"
               android:paddingTop="@dimen/global_status_bar_height">
 
     <TextView
+        style="@style/TextAppearance.AppCompat.Title.Inverse"
         android:id="@+id/navigation_drawer_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:gravity="center"
-
+        android:paddingLeft="20dp"
+        android:gravity="left"
         android:text="TEST TEST"/>
 
 
