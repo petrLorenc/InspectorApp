@@ -68,8 +68,10 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 		mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
 		mNavigationView.setNavigationItemSelectedListener(this);
 
-		((TextView) findViewById(R.id.navigation_drawer_username)).setText(ParseUser
-				.getCurrentUser().getUsername());
+		if(ParseUser.getCurrentUser() != null) {
+			((TextView) findViewById(R.id.navigation_drawer_username)).setText(ParseUser
+					.getCurrentUser().getUsername());
+		}
     }
 
 	public void changeFragment(String toFragment){
