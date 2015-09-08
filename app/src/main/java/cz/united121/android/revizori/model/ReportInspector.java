@@ -3,6 +3,7 @@ package cz.united121.android.revizori.model;
 import com.parse.ParseClassName;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.Locale;
@@ -51,6 +52,10 @@ public class ReportInspector extends ParseObject {
 
 	public ParseGeoPoint getLocation() {
 		return getParseGeoPoint(LOCATION);
+	}
+
+	public static ParseQuery<ReportInspector> getQuery(){
+		return ParseQuery.getQuery(ReportInspector.class);
 	}
 
 	public interface TypeOfVehicle {

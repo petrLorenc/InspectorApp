@@ -42,7 +42,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.base_layout);
+		setContentView(R.layout.base_layout);
+
 
         String fragmentName = getFragmentName();
         if (fragmentName == null) {
@@ -59,11 +60,14 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
                     .add(R.id.fragment_place, fragment, fragment.getClass().getName())
                     .commit();
         }else{
-			getFragmentManager()
-					.beginTransaction()
-					.add(R.id.fragment_place, fragment, fragment.getClass().getName())
-					.commit();
+			if(savedInstanceState == null ) {
+				getFragmentManager()
+						.beginTransaction()
+						.add(R.id.fragment_place, fragment, fragment.getClass().getName())
+						.commit();
+			}
 		}
+
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
 		mNavigationView.setNavigationItemSelectedListener(this);
@@ -92,18 +96,15 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 			if(args != null){
 				fragment.setArguments(args);
 			}
-            getFragmentManager().beginTransaction()
-                    .setCustomAnimations(
-                            R.animator.fragment_slide_in, R.animator.fragment_slide_out,0,0)
-                    .replace(R.id.fragment_place, fragment)
-                    .addToBackStack(null)
-                    .commit();
-        }else{
-			if(args != null){
-				fragment.setArguments(args);
-			}
 			getFragmentManager().beginTransaction()
                     .setCustomAnimations(
+							R.animator.fragment_slide_in, R.animator.fragment_slide_out,0,0)
+					.replace(R.id.fragment_place,fragment)
+					.addToBackStack(null)
+					.commit();
+		}else{
+			getFragmentManager().beginTransaction()
+					.setCustomAnimations(
 							R.animator.fragment_slide_in, R.animator.fragment_slide_out,0,0)
 					.replace(R.id.fragment_place,fragment)
 					.addToBackStack(null)

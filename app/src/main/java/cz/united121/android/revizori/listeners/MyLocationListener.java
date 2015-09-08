@@ -8,7 +8,6 @@ import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.GoogleMap;
 
 import cz.united121.android.revizori.R;
 import cz.united121.android.revizori.activity.base.BaseActivity;
@@ -23,15 +22,17 @@ public class MyLocationListener implements LocationListener {
 
 	private BaseActivity mBaseActivity;
 
-	private Location mLocationBaseOnTime;
+	private static Location mLocation;
 	private long timeLastLocationUpdate;
 	private long timePenumtimateLocationUpdate;
 	private final long TIME_TOLERANCE_IN_SECOND = 10;
+	private GoogleApiClient mGoogleApiClient;
 
-	public MyLocationListener(BaseActivity baseActivity) {
+	public MyLocationListener(BaseActivity baseActivity, GoogleApiClient googleApiClient) {
 		timeLastLocationUpdate = SystemClock.elapsedRealtime();
 		timePenumtimateLocationUpdate = 0;
 		mBaseActivity = baseActivity;
+		mGoogleApiClient = googleApiClient;
 	}
 
 	@Override
@@ -39,7 +40,7 @@ public class MyLocationListener implements LocationListener {
 		Log.d(TAG, "onLocationChanged");
 		timePenumtimateLocationUpdate = timeLastLocationUpdate;
 		timeLastLocationUpdate = SystemClock.elapsedRealtime();
-		mLocationBaseOnTime = location;
+		mLocation = location;
 
 	}
 
@@ -68,28 +69,29 @@ public class MyLocationListener implements LocationListener {
 	 *
 	 * @return null if time between two measurement are too small
 	 */
-	public Location getValidLocation(){
-		if(((timeLastLocationUpdate - timePenumtimateLocationUpdate)/1000) < TIME_TOLERANCE_IN_SECOND){
-			return mLocationBaseOnTime;
-		}else {
-			return null;
-		}
-	}
+//	private Location getValidLocation(){
+//		if(((timeLastLocationUpdate - timePenumtimateLocationUpdate)/1000) < TIME_TOLERANCE_IN_SECOND){
+//			return mLocation;
+//		}else {
+//			return null;
+//		}
+//	}
 
 	/**
 	 *
 	 * @return null if time between two measurement are too small
 	 */
-	public Location getValidLocation(GoogleApiClient googleApiClient){
+	public Location getValidLocation( ){
 		Location location = null;
-		if(googleApiClient != null
+		if(mGoogleApiClient != null
 				&
-				LocationServices.FusedLocationApi.getLocationAvailability(googleApiClient)
+				LocationServices.FusedLocationApi.getLocationAvailability(mGoogleApiClient)
 						.isLocationAvailable()
 				&
 				(location = LocationServices.FusedLocationApi
-						.getLastLocation (googleApiClient)) != null){
-			return location;
+						.getLastLocation (mGoogleApiClient)) != null){
+			mLocation = location;
+			return mLocation;
 		}
 		return null;
 	}

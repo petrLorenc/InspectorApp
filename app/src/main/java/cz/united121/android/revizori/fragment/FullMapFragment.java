@@ -20,7 +20,12 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.parse.ParseGeoPoint;
+import com.parse.ParseQuery;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -29,6 +34,7 @@ import cz.united121.android.revizori.R;
 import cz.united121.android.revizori.activity.MapActivity;
 import cz.united121.android.revizori.activity.base.BaseActivity;
 import cz.united121.android.revizori.fragment.base.BaseFragment;
+import cz.united121.android.revizori.listeners.MyCameraChangedListener;
 import cz.united121.android.revizori.listeners.MyLocationListener;
 import cz.united121.android.revizori.model.ReportInspector;
 import cz.united121.android.revizori.util.Util;
@@ -86,8 +92,8 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
         mMapFragment.getMapAsync(this);
 
 		mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-		mMyLocationListener = new MyLocationListener((BaseActivity) getActivity());
-		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0,
+		mMyLocationListener = new MyLocationListener((BaseActivity) getActivity(),mGoogleApiClient);
+		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 50,
 				mMyLocationListener);
 
         return cachedView;
@@ -106,6 +112,9 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
     public void onDestroyView() {
 		Log.d(TAG, "onDestroyView");
 		super.onDestroyView();
+		if(mLocationManager != null){
+			mLocationManager.removeUpdates(mMyLocationListener);
+		}
         if(mGoogleApiClient != null){
             mGoogleApiClient.disconnect();
         }
@@ -171,10 +180,9 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
 			}
 		});
 		this.googleMap.setMyLocationEnabled(true);
+		this.googleMap.setOnCameraChangeListener(new MyCameraChangedListener(googleMap,mMyLocationListener));
         mGoogleApiClient.connect();
     }
-
-
 
 	@OnClick(R.id.reporting_insperctor)
 	public void reportingInspector(View view) {
@@ -196,9 +204,7 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
 		//check if we can use last known position
 		Location location = null;
 		//measurement of location was before 10 second
-		if((location = mMyLocationListener.getValidLocation()) != null){}
-		// of measurement of location is sufficient
-		else if((location = mMyLocationListener.getValidLocation(mGoogleApiClient)) != null){}
+		 if((location = mMyLocationListener.getValidLocation()) != null){}
 		else{
 			Util.makeAlertDialogOnlyOK(getActivity(),getString(R.string.full_map_problem_with_position));
 			return;
@@ -217,8 +223,6 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
 		//check if we can use last known position
 		Location location = null;
 		if((location = mMyLocationListener.getValidLocation()) != null){}
-		// of measurement of location is sufficient
-		else if((location = mMyLocationListener.getValidLocation(mGoogleApiClient)) != null){}
 		else{
 			Util.makeAlertDialogOnlyOK(getActivity(),getString(R.string.full_map_problem_with_position));
 			return;

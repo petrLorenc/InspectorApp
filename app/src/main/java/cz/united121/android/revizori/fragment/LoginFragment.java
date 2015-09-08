@@ -88,7 +88,12 @@ public class LoginFragment extends BaseFragment {
 					getActivity().finish();
 				} else {
 					// Signup failed.
-					Toast.makeText(getActivity(), R.string.login_login_error,Toast.LENGTH_SHORT).show();
+					if(Checker.isOnline(getActivity())){
+						Toast.makeText(getActivity(), R.string.login_login_to_network_settings,Toast.LENGTH_SHORT).show();
+						startActivity(new Intent(android.provider.Settings.ACTION_NETWORK_OPERATOR_SETTINGS));
+					}else {
+						Toast.makeText(getActivity(), R.string.login_login_error, Toast.LENGTH_SHORT).show();
+					}
 					progress_bar_login.setVisibility(View.GONE);
 					linear_content.setVisibility(View.VISIBLE);
 					Log.d(TAG, e.getMessage());

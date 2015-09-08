@@ -1,9 +1,12 @@
 package cz.united121.android.revizori.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import cz.united121.android.revizori.activity.base.BaseActivity;
 import cz.united121.android.revizori.fragment.FullMapFragment;
+import cz.united121.android.revizori.service.MyTrackingService;
 
 /**
  * TODO add class description
@@ -21,10 +24,18 @@ public class MapActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+		Log.d(TAG, "onDestroy");
+		startService(new Intent(this, MyTrackingService.class));
     }
 
-    @Override
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		Log.d(TAG, "onDestroy");
+		stopService(new Intent(this, MyTrackingService.class));
+	}
+
+	@Override
     protected void onStart() {
         super.onStart();
     }

@@ -66,9 +66,8 @@ public class SummaryFragment extends BaseFragment {
 						          passArg.getDouble(BUNDLE_LONGITUDE, 0.0)),
 				passArg.getString(BUNDLE_TYPEOFVEHICLE,ReportInspector.TypeOfVehicle.BUS));
 				// default is BUS);
-		mSummary.setText( nameOfStation + " LAT : " + latitude + " LONG : " + longitude + " TYPE " +
+		mSummary.setText(nameOfStation + " LAT : " + latitude + " LONG : " + longitude + " TYPE " +
 				": " + typeOfVehicle);
-		mReportInspector.setComment(mSummary.getText().toString());
 		mReportInspector.setNameOfStation(nameOfStation);
 		mReportInspector.saveEventually();
 
@@ -77,6 +76,8 @@ public class SummaryFragment extends BaseFragment {
 
 	@OnClick(R.id.summary_to_map_button)
 	public void onClickBackToMap(View view){
+		mReportInspector.setComment(mSummary.getText().toString());
+		mReportInspector.saveEventually();
 		((BaseActivity) getActivity()).changeFragment(FullMapFragment.class.getName());
 	}
 }
