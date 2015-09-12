@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="20dp"
+    android:background="@drawable/bg_dialog">
+
+    <LinearLayout
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/alert_dialog_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:textSize="@dimen/text_4l"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/darker_gray"/>
+        <TextView
+            android:id="@+id/alert_dialog_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Description - lorem ipsum dolo"
+            android:textSize="@dimen/text_l"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/description">
+        <Button
+            android:padding="10dp"
+            android:id="@+id/alert_dialog_no_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ignorovat"/>
+
+        <android.widget.Space
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/alert_dialog_yes_button"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_rounded_buttons_yes"
+            android:text="Prejit do nastavvnei"/>
+    </LinearLayout>
+</RelativeLayout>

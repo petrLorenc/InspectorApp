@@ -24,7 +24,7 @@ public class MapActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-		Log.d(TAG, "onDestroy");
+		Log.d(TAG, "onCreate");
 		startService(new Intent(this, MyTrackingService.class));
     }
 

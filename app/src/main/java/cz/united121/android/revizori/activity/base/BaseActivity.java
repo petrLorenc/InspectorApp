@@ -60,6 +60,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
                     .add(R.id.fragment_place, fragment, fragment.getClass().getName())
                     .commit();
         }else{
+			// checking savedInstanceState - after rotate it wont be null -> no adding same fragment second time
 			if(savedInstanceState == null ) {
 				getFragmentManager()
 						.beginTransaction()

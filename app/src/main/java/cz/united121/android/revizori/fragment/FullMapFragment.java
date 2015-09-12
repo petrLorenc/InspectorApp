@@ -34,6 +34,7 @@ import cz.united121.android.revizori.R;
 import cz.united121.android.revizori.activity.MapActivity;
 import cz.united121.android.revizori.activity.base.BaseActivity;
 import cz.united121.android.revizori.fragment.base.BaseFragment;
+import cz.united121.android.revizori.fragment.dialog.AlertDialogFragment;
 import cz.united121.android.revizori.listeners.MyCameraChangedListener;
 import cz.united121.android.revizori.listeners.MyLocationListener;
 import cz.united121.android.revizori.model.ReportInspector;
@@ -44,7 +45,8 @@ import cz.united121.android.revizori.util.Util;
  * Created by Petr Lorenc[Lorenc55Petr@seznam.cz] on {13.8.2015}
  */
 public class FullMapFragment extends BaseFragment implements GoogleApiClient.ConnectionCallbacks,
-		GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback{
+		GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback,
+		AlertDialogFragment.OnClickListener{
     public static final String TAG = FullMapFragment.class.getName();
 
 	private boolean mStatus = false;
@@ -75,11 +77,19 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
     }
 
 	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		Log.d(TAG, "onActivityCreated");
+		mMapFragment.onCreate(savedInstanceState);
+	}
+
+	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		Log.d(TAG, "onCreateView");
+		Log.d(TAG, "cachedView is null == " + (cachedView == null));
 		if (cachedView == null) {
 			cachedView = super.onCreateView(inflater, container, savedInstanceState);
 		}
+		Log.d(TAG, "onCreateView");
 		ButterKnife.bind(this, cachedView);
 
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
@@ -103,12 +113,20 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
 	public void onResume() {
 		super.onResume();
 		Log.d(TAG, "onResume");
+		mMapFragment.onResume();
 		if(!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
 			Util.makeAlertDialogGPS(getActivity(), getString(R.string.full_map_requesting_enabling_GPS_start));
 		}
 	}
 
-    @Override
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		Log.d(TAG, "onSaveInstanceState");
+		mMapFragment.onSaveInstanceState(outState);
+	}
+
+	@Override
     public void onDestroyView() {
 		Log.d(TAG, "onDestroyView");
 		super.onDestroyView();
@@ -187,10 +205,15 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
 	@OnClick(R.id.reporting_insperctor)
 	public void reportingInspector(View view) {
 		Log.d(TAG,"reportingInspector");
+		//TODO TEST
 		mReportingGeneral.setVisibility(View.GONE);
 		mReportingBus.setVisibility(View.VISIBLE);
 		mReportingTram.setVisibility(View.VISIBLE);
 		mReportingMetro.setVisibility(View.VISIBLE);
+
+		//AlertDialogFragment alertDialogFragment = AlertDialogFragment.newInstance(this,"POZOR","Zapnout wifi","Jdeme dale", "UPS");
+		//alertDialogFragment.show(getFragmentManager(),"alertDialog");
+
 	}
 
 	@OnClick(R.id.reporting_insperctor_bus)
@@ -244,5 +267,17 @@ public class FullMapFragment extends BaseFragment implements GoogleApiClient.Con
 		bundle.putString(SummaryFragment.BUNDLE_TYPEOFVEHICLE, typeOfVehicle);
 		//bundle.putString(SummaryFragment.BUNDLE_NAMEOFSTATION, mStation.getName());
 		((BaseActivity) getActivity()).changeFragment(SummaryFragment.class.getName(), bundle);
+	}
+
+	@Override
+	public void onPositiveClick() {
+		Log.d(TAG, "onPositiveClick");
+
+	}
+
+	@Override
+	public void onNegativeClick() {
+		Log.d(TAG, "onNegativeClick");
+
 	}
 }

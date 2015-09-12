@@ -33,6 +33,7 @@ public class MyServiceLocationListener implements LocationListener {
 	public static boolean isLocationEnabled = false;
 
 	private Context mContext;
+	private Location mLastKnownPosition = null;
 
 	public MyServiceLocationListener(Context context) {
 		mContext = context;
@@ -41,7 +42,10 @@ public class MyServiceLocationListener implements LocationListener {
 	@Override
 	public void onLocationChanged(Location location) {
 		Log.d(TAG, "onLocationChanged" + isLocationEnabled);
-
+		mLastKnownPosition = location;
+		if(isLocationEnabled){
+			new ControlPosition(mContext).execute(mLastKnownPosition);
+		}
 	}
 
 	@Override
@@ -54,7 +58,7 @@ public class MyServiceLocationListener implements LocationListener {
 	public void onProviderEnabled(String provider) {
 		Log.d(TAG, "onProviderEnabled");
 		isLocationEnabled = true;
-		new ControlPosition(mContext).execute();
+		new ControlPosition(mContext).execute(mLastKnownPosition);
 	}
 
 	@Override
@@ -78,12 +82,15 @@ public class MyServiceLocationListener implements LocationListener {
 		@Override
 		protected Boolean doInBackground(Location... params) {
 			Log.d(TAG, "doInBackground");
+			if(params.length <= 0 || params[0] == null){
+				return false;
+			}
 			Map<String,ParseGeoPoint> paramsToCloud = new HashMap<>();
-			//ParseGeoPoint parseGeoPoint = new ParseGeoPoint(params[0].getLatitude(),params[0].getLongitude());
-			ParseGeoPoint parseGeoPoint = new ParseGeoPoint(50,77);
+			ParseGeoPoint parseGeoPoint = new ParseGeoPoint(params[0].getLatitude(),params[0].getLongitude());
+			//ParseGeoPoint parseGeoPoint = new ParseGeoPoint(50,77);
 			paramsToCloud.put(PARAMS_KEY, parseGeoPoint);
 			try {
-				HashMap<String, Object> response = ParseCloud.callFunction("isInspectorNearMyPositionDUMMY", paramsToCloud);
+				HashMap<String, Object> response = ParseCloud.callFunction("isInspectorNearMyPosition", paramsToCloud);
 				Boolean responseResult = (Boolean) response.get(RESPONSE_KEY);
 				Log.d(TAG, "doInBackground response" + responseResult.toString());
 				return responseResult;
@@ -91,7 +98,7 @@ public class MyServiceLocationListener implements LocationListener {
 				Log.d(TAG, "doInBackground exception");
 				e.printStackTrace();
 			}
-			return null;
+			return false;
 		}
 
 		@Override
