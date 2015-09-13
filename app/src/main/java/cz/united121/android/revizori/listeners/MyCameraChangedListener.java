@@ -1,6 +1,5 @@
 package cz.united121.android.revizori.listeners;
 
-import android.location.Location;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -55,6 +54,7 @@ public class MyCameraChangedListener implements GoogleMap.OnCameraChangeListener
 				Log.d(TAG, "done");
 				if (e != null) {
 					Log.d(TAG, "error in findInBackground");
+					e.printStackTrace();
 					return;
 				}
 				LocationGetter.addReports(list);

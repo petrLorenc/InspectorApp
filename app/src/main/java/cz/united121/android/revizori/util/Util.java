@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.provider.Settings;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 
@@ -15,6 +14,7 @@ import android.view.inputmethod.InputMethodManager;
  **/
 public class Util {
 	public static final String TAG = Util.class.getName();
+	public static boolean shovingDiaglog = false;
 
 	public static void hideSoftKeyboard(Activity activity) {
 		InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -25,8 +25,6 @@ public class Util {
 			e.printStackTrace();
 		}
 	}
-
-	public static boolean shovingDiaglog = false;
 
 	public static void makeAlertDialogGPS(final Activity actualActivity, String message){
 		if(shovingDiaglog == false){
@@ -41,7 +39,7 @@ public class Util {
 				.setPositiveButton("OK",
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface d, int id) {
-								actualActivity.startActivity(new Intent(action));
+								actualActivity.startActivityForResult(new Intent(action), 200);
 								shovingDiaglog = false;
 								d.dismiss();
 							}

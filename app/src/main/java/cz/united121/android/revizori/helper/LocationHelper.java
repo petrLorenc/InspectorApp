@@ -2,7 +2,6 @@ package cz.united121.android.revizori.helper;
 
 import android.content.Context;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -15,8 +14,6 @@ import com.google.android.gms.location.LocationServices;
 import java.util.ArrayList;
 import java.util.List;
 
-import cz.united121.android.revizori.App;
-
 /**
  * TODO add class description
  * Created by Petr Lorenc[Lorenc55Petr@seznam.cz] on {9/12/2015}
@@ -27,27 +24,28 @@ public class LocationHelper implements LocationListener, GoogleApiClient.Connect
 	private static LocationHelper mLocationHelper;
 	private GoogleApiClient mGoogleApiClient;
 	private LocationRequest mLocationRequest;
-	private LocationManager locationManager;
 
 	private List<LocationHelperInterface> mLocationHelperInterfaceList = new ArrayList<>();
 
-	public static LocationHelper getInstance(Context context){
-		if(mLocationHelper == null){
-			mLocationHelper = new LocationHelper(context);
-		}
-		return mLocationHelper;
-	}
-
-	private LocationHelper(Context context){
+	private LocationHelper(Context context) {
 		buildGoogleApiClient(context);
 
-		mLocationRequest =  LocationRequest.create();
+		mLocationRequest = LocationRequest.create();
 		// Use high accuracy
 		mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 		// Set the update interval to 5 seconds
 		mLocationRequest.setInterval(5000);
 		// Set the fastest update interval to 1 second
 		mLocationRequest.setFastestInterval(1000);
+		// Set minimal distance between two measurement
+		mLocationRequest.setSmallestDisplacement(50);
+	}
+
+	public static LocationHelper getInstance(Context context){
+		if(mLocationHelper == null){
+			mLocationHelper = new LocationHelper(context.getApplicationContext());
+		}
+		return mLocationHelper;
 	}
 
 	private void buildGoogleApiClient(Context context) {
@@ -56,46 +54,65 @@ public class LocationHelper implements LocationListener, GoogleApiClient.Connect
 				.addOnConnectionFailedListener(this)
 				.addApi(LocationServices.API)
 				.build();
+		mGoogleApiClient.connect();
 	}
 
 	public void requestUpdate(){
-		LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,mLocationRequest,this);
+		if (mGoogleApiClient.isConnected()) {
+			LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+		} else {
+			mGoogleApiClient.reconnect();
+		}
 	}
 
 	public void registerListener(LocationHelperInterface mLocationHelperInterface){
+		if (mLocationHelperInterfaceList.size() <= 0) { // add request only when there is some listener - have to manage add and removing
+			requestUpdate();
+		}
 		mLocationHelperInterfaceList.add(mLocationHelperInterface);
 	}
 
 	public void removeListener(LocationHelperInterface mLocationHelperInterface){
 		mLocationHelperInterfaceList.remove(mLocationHelperInterface);
+		if (mLocationHelperInterfaceList.size() <= 0) {
+			LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+		}
 	}
 
 	@Override
 	public void onLocationChanged(Location location) {
 		Log.d(TAG, "onLocationChanged");
-
+		for (LocationHelperInterface helperInterface : mLocationHelperInterfaceList) {
+			helperInterface.OnLocationChanged(location);
+		}
 	}
 
 	@Override
 	public void onConnected(Bundle bundle) {
 		Log.d(TAG, "onConnected");
-
+		requestUpdate();
 	}
 
 	@Override
 	public void onConnectionSuspended(int i) {
 		Log.d(TAG, "onConnectionSuspended");
-
+		for (LocationHelperInterface helperInterface : mLocationHelperInterfaceList) {
+			helperInterface.OnConnectionFailed();
+		}
 	}
 
 	@Override
 	public void onConnectionFailed(ConnectionResult connectionResult) {
 		Log.d(TAG, "onConnectionFailed");
-
+		for (LocationHelperInterface helperInterface : mLocationHelperInterfaceList) {
+			helperInterface.OnConnectionFailed();
+		}
 	}
 
 	public interface LocationHelperInterface{
-		void OnLocationChanged();
+		void OnLocationChanged(Location location);
 		void OnLocationGetFailed();
+
+		void OnConnectionFailed();
 	}
 }
