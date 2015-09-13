@@ -24,7 +24,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.MapActivity"
-            android:launchMode="singleInstance"/>
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"/>
 
         <service android:name=".service.MyTrackingService"/>
 

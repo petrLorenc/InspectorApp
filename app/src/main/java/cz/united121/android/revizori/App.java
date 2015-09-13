@@ -1,7 +1,10 @@
 package cz.united121.android.revizori;
 
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
+import android.view.Display;
+import android.view.WindowManager;
 
 import com.parse.Parse;
 import com.parse.ParseObject;
@@ -27,5 +30,11 @@ public class App extends Application {
 
         ParseObject.registerSubclass(ReportInspector.class);
         Parse.initialize(this, mApplicationID, mClientKey);
+
     }
+
+//	public static Display getDisplay(){
+//		WindowManager wm = (WindowManager) sApp.getSystemService(Context.WINDOW_SERVICE);
+//		return wm.getDefaultDisplay();
+//	}
 }
