@@ -20,7 +20,6 @@ public class MapActivity extends BaseActivity {
         return FullMapFragment.class.getName();
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

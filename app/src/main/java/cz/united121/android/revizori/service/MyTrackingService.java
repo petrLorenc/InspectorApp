@@ -1,30 +1,30 @@
 package cz.united121.android.revizori.service;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.media.RingtoneManager;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import cz.united121.android.revizori.R;
 import cz.united121.android.revizori.activity.MapActivity;
 import cz.united121.android.revizori.helper.LocationHelper;
+import cz.united121.android.revizori.model.ReportInspector;
+import cz.united121.android.revizori.model.helper.LocationGetter;
+import cz.united121.android.revizori.util.Util;
 
 /**
  * TODO add class description
@@ -103,11 +103,12 @@ public class MyTrackingService extends Service implements LocationHelper.Locatio
 
 	}
 
-	public class ControlPosition extends AsyncTask<Location, Void, Boolean> {
+	public class ControlPosition extends AsyncTask<Location, Void, List<ReportInspector>> {
 
 		public final String TAG = ControlPosition.class.getName();
 		public final String RESPONSE_KEY = "RESULT";
 		public final String PARAMS_KEY = "point";
+		public final String RESPONSE_DATA_KEY = "DATA";
 
 		private Context mContext;
 
@@ -116,47 +117,39 @@ public class MyTrackingService extends Service implements LocationHelper.Locatio
 		}
 
 		@Override
-		protected Boolean doInBackground(Location... params) {
+		protected List<ReportInspector> doInBackground(Location... params) {
 			Log.d(TAG, "doInBackground");
 			if (params.length <= 0 || params[0] == null) {
-				return false;
+				return new ArrayList<ReportInspector>();
 			}
 			Map<String, ParseGeoPoint> paramsToCloud = new HashMap<>();
 			ParseGeoPoint parseGeoPoint = new ParseGeoPoint(params[0].getLatitude(), params[0].getLongitude());
-			//ParseGeoPoint parseGeoPoint = new ParseGeoPoint(50,77);
 			paramsToCloud.put(PARAMS_KEY, parseGeoPoint);
 			try {
 				HashMap<String, Object> response = ParseCloud.callFunction("isInspectorNearMyPosition", paramsToCloud);
 				Boolean responseResult = (Boolean) response.get(RESPONSE_KEY);
-				Log.d(TAG, "doInBackground response" + responseResult.toString());
-				return responseResult;
+				List<ReportInspector> inspectorList = (ArrayList<ReportInspector>) response.get(RESPONSE_DATA_KEY);
+				Log.d(TAG, "doInBackground inspectorList" + inspectorList.get(0).getTypeOfVehicle());
+				return inspectorList;
 			} catch (ParseException e) {
-				Log.d(TAG, "doInBackground exception");
+				Log.d(TAG, "ParseException exception");
 				e.printStackTrace();
+			} catch (ClassCastException e) {
+				Log.d(TAG, "ClassCastException exception");
+				Log.d(TAG, e.getMessage());
+				e.printStackTrace();
+
 			}
-			return false;
+			return new ArrayList<ReportInspector>();
 		}
 
 		@Override
-		protected void onPostExecute(Boolean isInpectorNear) {
-			super.onPostExecute(isInpectorNear);
-			Log.d(TAG, "onPostExecute" + (isInpectorNear != null ? isInpectorNear.toString() : "It was null"));
-			if (isInpectorNear == true) {
-				NotificationCompat.Builder inspectorIsNearNotification = new NotificationCompat.Builder(mContext)
-						.setSmallIcon(R.drawable.reporting_inspector)
-						.setContentTitle("POZOR revizor je blizko")
-						.setContentText("nejaky popisny text")
-						.setTicker("Pozor revizor byl spatren nedaleko")
-						.setAutoCancel(true)
-						.setStyle(new NotificationCompat.InboxStyle())
-						.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-
-				Intent intent = new Intent(mContext, MapActivity.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
-				PendingIntent resultPendingIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-				inspectorIsNearNotification.setContentIntent(resultPendingIntent);
-				NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-				notificationManager.notify(1, inspectorIsNearNotification.build());
+		protected void onPostExecute(List<ReportInspector> nearestInspector) {
+			super.onPostExecute(nearestInspector);
+			Log.d(TAG, "onPostExecute: nearestInspector.size = " + nearestInspector.size());
+			if (nearestInspector.size() != 0) {
+				LocationGetter.addReports(nearestInspector);
+				Util.makeNotification(mContext, "REVIZOR JE BLIZKO", "V okoli Vasi pozice byl pred nedavnou dobou spatren revizor", "Radeji davejte bacha", MapActivity.class);
 			}
 		}
 	}

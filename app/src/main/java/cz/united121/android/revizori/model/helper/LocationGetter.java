@@ -12,7 +12,7 @@ import cz.united121.android.revizori.model.ReportInspector;
 public class LocationGetter {
 	public static final String TAG = LocationGetter.class.getName();
 
-	public static List<ReportInspector> mReportList = new ArrayList<>();
+	private static List<ReportInspector> mReportList = new ArrayList<>();
 
 	public static void addReports(List<ReportInspector> list){
 		for(ReportInspector reportInspector : list){
