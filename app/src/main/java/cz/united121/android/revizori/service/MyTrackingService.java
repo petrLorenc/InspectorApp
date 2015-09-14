@@ -129,8 +129,7 @@ public class MyTrackingService extends Service implements LocationHelper.Locatio
 				HashMap<String, Object> response = ParseCloud.callFunction("isInspectorNearMyPosition", paramsToCloud);
 				Boolean responseResult = (Boolean) response.get(RESPONSE_KEY);
 				List<ReportInspector> inspectorList = (ArrayList<ReportInspector>) response.get(RESPONSE_DATA_KEY);
-				Log.d(TAG, "doInBackground inspectorList" + inspectorList.get(0).getTypeOfVehicle());
-				return inspectorList;
+				return (inspectorList == null) ? (new ArrayList<ReportInspector>()) : (inspectorList);
 			} catch (ParseException e) {
 				Log.d(TAG, "ParseException exception");
 				e.printStackTrace();
