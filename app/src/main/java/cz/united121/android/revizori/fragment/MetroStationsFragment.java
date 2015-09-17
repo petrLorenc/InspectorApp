@@ -56,6 +56,7 @@ public class MetroStationsFragment extends BaseFragment implements SearchView.On
 		mRecyclerView.setAdapter(mAdapter);
 		mAdapter.notifyDataSetChanged();
 
+		mSearchView.requestFocus();
 		mSearchView.setOnQueryTextListener(this);
 
 		return view;
