@@ -38,13 +38,13 @@ public class MyCameraChangedListener implements GoogleMap.OnCameraChangeListener
 	}
 
 	private void doMapUpdate(LatLng location, double zoomLevel) {
-		ParseQuery<ReportInspector> queryOnInspectorPosition = ReportInspector.getQuery();
 		if(location == null){
 			return;
 		}
+		ParseQuery<ReportInspector> queryOnInspectorPosition = ReportInspector.getQuery();
 		ParseGeoPoint parseGeoPoint = new ParseGeoPoint(location.latitude,location.longitude);
 		//TODO hardCoded screenWidth
-		queryOnInspectorPosition.whereWithinKilometers("Location", parseGeoPoint, getRadiusToGivenZoom(720, zoomLevel));
+		queryOnInspectorPosition.whereWithinKilometers("Location", parseGeoPoint, getRadiusToGivenZoom(720, zoomLevel) + 0.5);
 		if(mLastQuery != null){
 			queryOnInspectorPosition.whereDoesNotMatchQuery("objectId",mLastQuery);
 		}
@@ -58,6 +58,7 @@ public class MyCameraChangedListener implements GoogleMap.OnCameraChangeListener
 					return;
 				}
 				LocationGetter.addReports(list);
+				mClusterManager.clearItems();
 				mClusterManager.addItems(LocationGetter.getReports());
 			}
 		});

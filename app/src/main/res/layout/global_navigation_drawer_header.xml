@@ -1,20 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/primary"
-              android:paddingTop="@dimen/global_status_bar_height">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/primary"
+                android:minHeight="128dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="@dimen/global_status_bar_height">
+
+    <ImageView
+        android:id="@+id/navigation_drawer_image"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/reporting_inspector"/>
 
     <TextView
-        style="@style/TextAppearance.AppCompat.Title.Inverse"
         android:id="@+id/navigation_drawer_username"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:paddingLeft="20dp"
-        android:gravity="left"
-        android:text="TEST TEST"/>
+        android:layout_toRightOf="@id/navigation_drawer_image"
+        android:ellipsize="marquee"
+        android:paddingLeft="5dp"
+        android:paddingTop="10dp"
+        android:singleLine="true"
+        android:text="TEST TEST"
+        android:textSize="@dimen/text_xl"/>
+
+    <TextView
+        android:id="@+id/navigation_drawer_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/navigation_drawer_username"
+        android:layout_toRightOf="@id/navigation_drawer_image"
+        android:ellipsize="marquee"
+        android:paddingLeft="5dp"
+        android:singleLine="true"
+        android:text="TEST TEST"
+        android:textSize="@dimen/text_s"/>
 
 
-</LinearLayout>
+</RelativeLayout>

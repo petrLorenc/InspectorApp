@@ -2,7 +2,6 @@ package cz.united121.android.revizori.activity.base;
 
 import android.app.Fragment;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -11,16 +10,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.squareup.picasso.Picasso;
 
 import cz.united121.android.revizori.R;
 import cz.united121.android.revizori.activity.LoginActivity;
 import cz.united121.android.revizori.fragment.FullMapFragment;
-import cz.united121.android.revizori.fragment.LoginFragment;
 import cz.united121.android.revizori.fragment.SettingFragment;
+import cz.united121.android.revizori.model.Images;
 import cz.united121.android.revizori.util.Util;
 
 /**
@@ -76,6 +80,18 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 		if(ParseUser.getCurrentUser() != null) {
 			((TextView) findViewById(R.id.navigation_drawer_username)).setText(ParseUser
 					.getCurrentUser().getUsername());
+			((TextView) findViewById(R.id.navigation_drawer_email)).setText(ParseUser
+					.getCurrentUser().getEmail());
+			final ImageView icon = ((ImageView) findViewById(R.id.navigation_drawer_image));
+			ParseQuery<Images> imagesParseQuery = ParseQuery.getQuery(Images.PARSE_TAG);
+			imagesParseQuery.whereEqualTo(Images.USER, ParseUser.getCurrentUser());
+			imagesParseQuery.getFirstInBackground(new GetCallback<Images>() {
+				@Override
+				public void done(Images image, ParseException e) {
+					Log.d(TAG, "done");
+					Picasso.with(getApplicationContext()).load(image.getUrlImage()).into(icon);
+				}
+			});
 		}
     }
 

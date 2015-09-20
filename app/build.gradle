@@ -31,6 +31,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: 'Parse-*.jar')
 
     compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'de.hdodenhof:circleimageview:1.3.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
 
     compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
     compile 'com.google.code.gson:gson:2.3.1'

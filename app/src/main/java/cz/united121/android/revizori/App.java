@@ -1,14 +1,12 @@
 package cz.united121.android.revizori;
 
 import android.app.Application;
-import android.content.Context;
 import android.util.Log;
-import android.view.Display;
-import android.view.WindowManager;
 
 import com.parse.Parse;
 import com.parse.ParseObject;
 
+import cz.united121.android.revizori.model.Images;
 import cz.united121.android.revizori.model.ReportInspector;
 
 /**
@@ -29,7 +27,8 @@ public class App extends Application {
         Parse.enableLocalDatastore(this);
 
         ParseObject.registerSubclass(ReportInspector.class);
-        Parse.initialize(this, mApplicationID, mClientKey);
+		ParseObject.registerSubclass(Images.class);
+		Parse.initialize(this, mApplicationID, mClientKey);
 
     }
 

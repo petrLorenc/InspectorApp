@@ -1,6 +1,7 @@
 package cz.united121.android.revizori.util;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -96,5 +97,15 @@ public class Util {
 		inspectorIsNearNotification.setContentIntent(resultPendingIntent);
 		NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.notify(1, inspectorIsNearNotification.build());
+	}
+
+	public static boolean isMyServiceRunning(Context context, Class<?> serviceClass) {
+		ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+		for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+			if (serviceClass.getName().equals(service.service.getClassName())) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

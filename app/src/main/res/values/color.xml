@@ -3,6 +3,7 @@
     <!--Main color-->
     <color name="primaryDark">#3F51B5</color>
     <color name="primary">#2196F3</color>
+    <color name="primary50Transparent">#442196F3</color>
     <color name="primaryLight">#B2EBFE</color>
     <color name="accent">#FF9800</color>
     <color name="accentLight">#FFF59D</color>

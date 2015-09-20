@@ -1,6 +1,5 @@
 package cz.united121.android.revizori.fragment.dialog;
 
-import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.graphics.drawable.ColorDrawable;
@@ -97,15 +96,16 @@ public class AlertDialogFragment extends DialogFragment {
 
 	@OnClick(R.id.alert_dialog_yes_button)
 	public void onYesClick(View view){
-		mOnClickListener.onPositiveClick();
+		mOnClickListener.onPositiveClick(this);
 	}
 	@OnClick(R.id.alert_dialog_no_button)
 	public void onNoClick(View view){
-		mOnClickListener.onNegativeClick();
+		mOnClickListener.onNegativeClick(this);
 	}
 
 	public interface OnClickListener {
-		void onPositiveClick();
-		void onNegativeClick();
+		void onPositiveClick(AlertDialogFragment dialogFragment);
+
+		void onNegativeClick(AlertDialogFragment dialogFragment);
 	}
 }
