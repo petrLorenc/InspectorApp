@@ -159,9 +159,12 @@ public class MyTrackingService extends Service implements LocationHelper.Locatio
 	public class ControlPosition extends AsyncTask<Location, Void, List<ReportInspector>> {
 
 		public final String TAG = ControlPosition.class.getName();
-		public final String RESPONSE_KEY = "RESULT";
-		public final String PARAMS_KEY = "point";
-		public final String RESPONSE_DATA_KEY = "DATA";
+		private final String RESPONSE_KEY = "RESULT";
+		private final String PARAMS_LOCATION = "point";
+		private final String PARAMS_DISTANCE = "distance";
+		private final String RESPONSE_DATA_KEY = "DATA";
+
+		private final float mDistance = 0.5f;
 
 		private Context mContext;
 
@@ -175,14 +178,15 @@ public class MyTrackingService extends Service implements LocationHelper.Locatio
 			if (params.length <= 0 || params[0] == null) {
 				return new ArrayList<ReportInspector>();
 			}
-			Map<String, ParseGeoPoint> paramsToCloud = new HashMap<>();
+			Map<String, Object> paramsToCloud = new HashMap<>();
 			ParseGeoPoint parseGeoPoint = new ParseGeoPoint(params[0].getLatitude(), params[0].getLongitude());
-			paramsToCloud.put(PARAMS_KEY, parseGeoPoint);
+			paramsToCloud.put(PARAMS_LOCATION, parseGeoPoint);
+			paramsToCloud.put(PARAMS_DISTANCE, mDistance);
 			try {
-				HashMap<String, Object> response = ParseCloud.callFunction("isInspectorNearMyPosition", paramsToCloud);
+				HashMap<String, Object> response = ParseCloud.callFunction("downloadRelevantData", paramsToCloud);
 				Boolean responseResult = (Boolean) response.get(RESPONSE_KEY);
 				List<ReportInspector> inspectorList = (ArrayList<ReportInspector>) response.get(RESPONSE_DATA_KEY);
-				return (inspectorList == null) ? (new ArrayList<ReportInspector>()) : (inspectorList);
+				return (inspectorList == null || !responseResult) ? (new ArrayList<ReportInspector>()) : (inspectorList);
 			} catch (ParseException e) {
 				Log.d(TAG, "ParseException exception");
 				e.printStackTrace();

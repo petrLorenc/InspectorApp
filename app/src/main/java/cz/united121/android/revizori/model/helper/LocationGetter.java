@@ -26,6 +26,10 @@ public class LocationGetter {
 		mReportList.removeAll(list);
 	}
 
+	public static void deleteAllReports() {
+		mReportList.clear();
+	}
+
 	public static List<ReportInspector> getReports(){
 		return mReportList;
 	}

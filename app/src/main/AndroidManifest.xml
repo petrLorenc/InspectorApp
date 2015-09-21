@@ -30,7 +30,7 @@
 
         <service android:name=".service.MyTrackingService"/>
 
-        <service android:name=".service.MyDeletingService"/>
+        <service android:name=".service.MyUpdatingService"/>
 
         <meta-data
             android:name="com.google.android.gms.version"

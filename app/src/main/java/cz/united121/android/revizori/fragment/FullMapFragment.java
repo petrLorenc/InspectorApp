@@ -1,7 +1,9 @@
 package cz.united121.android.revizori.fragment;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -24,17 +26,18 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cz.united121.android.revizori.BuildConfig;
 import cz.united121.android.revizori.R;
 import cz.united121.android.revizori.activity.MapActivity;
 import cz.united121.android.revizori.activity.base.BaseActivity;
 import cz.united121.android.revizori.fragment.base.BaseFragment;
 import cz.united121.android.revizori.fragment.dialog.AlertDialogFragment;
 import cz.united121.android.revizori.helper.LocationHelper;
-import cz.united121.android.revizori.listeners.MyCameraChangedListener;
 import cz.united121.android.revizori.listeners.helper.MyMultipleCameraChangeListener;
 import cz.united121.android.revizori.model.ReportInspector;
-import cz.united121.android.revizori.service.MyDeletingService;
+import cz.united121.android.revizori.model.helper.LocationGetter;
 import cz.united121.android.revizori.service.MyTrackingService;
+import cz.united121.android.revizori.service.MyUpdatingService;
 import cz.united121.android.revizori.util.Util;
 
 /**
@@ -44,8 +47,8 @@ import cz.united121.android.revizori.util.Util;
 public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 		AlertDialogFragment.OnClickListener, LocationHelper.LocationHelperInterface {
 	public static final String TAG = FullMapFragment.class.getName();
+	public static final String BROADCAST_TO_REFRESH_MAP = "cz.united121.android.revizori.fragment.refrestMap";
 	private static View cachedView;
-
 	@Bind(R.id.reporting_insperctor)
 	public ImageView mReportingGeneral;
 	@Bind(R.id.reporting_insperctor_bus)
@@ -54,11 +57,18 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 	public ImageView mReportingTram;
 	@Bind(R.id.reporting_insperctor_metro)
 	public ImageView mReportingMetro;
-
 	private List<ReportInspector> listPIncpectorObj = new ArrayList<>();
 	private MapFragment mMapFragment;
 	private GoogleMap mGoogleMap;
 	private ClusterManager<ReportInspector> mClusterManager;
+	private BroadcastReceiver myRefrestMapBroadcastReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Log.d(TAG, "onReceive");
+			mClusterManager.clearItems();
+			mClusterManager.addItems(LocationGetter.getReports());
+		}
+	};
 	private MyMultipleCameraChangeListener mMyMultipleCameraChangeListener;
 	private LocationHelper mLocationHelper;
 
@@ -91,8 +101,8 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 		Log.d(TAG, "onCreate");
 		mLocationHelper = LocationHelper.getInstance(getActivity());
 
-		Intent startIntent = new Intent(getActivity(), MyDeletingService.class);
-		startIntent.setAction(MyDeletingService.SERVICE_START);
+		Intent startIntent = new Intent(getActivity(), MyUpdatingService.class);
+		startIntent.setAction(MyUpdatingService.SERVICE_START);
 		getActivity().startService(startIntent);
 	}
 
@@ -130,6 +140,20 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 				.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 			Util.makeAlertDialogGPS(getActivity(), getString(R.string.full_map_requesting_enabling_GPS_start));
 		}
+		getActivity().registerReceiver(this.myRefrestMapBroadcastReceiver, new IntentFilter(BROADCAST_TO_REFRESH_MAP));
+
+		Intent startIntent = new Intent(getActivity(), MyUpdatingService.class);
+		startIntent.setAction(MyUpdatingService.SERVICE_FORCE);
+		getActivity().startService(startIntent);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		if (BuildConfig.DEBUG) {
+			Log.d(TAG, "onPause");
+		}
+		getActivity().unregisterReceiver(this.myRefrestMapBroadcastReceiver);
 	}
 
 	@Override
@@ -144,10 +168,9 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 		super.onDestroy();
 		Log.d(TAG, "onDestroy");
 		cachedView = null;
-		mMapFragment.onDestroy();
 
-		Intent stopIntent = new Intent(getActivity(), MyDeletingService.class);
-		stopIntent.setAction(MyDeletingService.SERVICE_STOP);
+		Intent stopIntent = new Intent(getActivity(), MyUpdatingService.class);
+		stopIntent.setAction(MyUpdatingService.SERVICE_STOP);
 		getActivity().startService(stopIntent);
 	}
 
@@ -174,7 +197,6 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 
 		mMyMultipleCameraChangeListener = new MyMultipleCameraChangeListener();
 		mMyMultipleCameraChangeListener.addListener(mClusterManager);
-		mMyMultipleCameraChangeListener.addListener(new MyCameraChangedListener(mClusterManager));
 
 		this.mGoogleMap.setOnCameraChangeListener(mMyMultipleCameraChangeListener);
 
