@@ -19,7 +19,7 @@ import java.util.TimeZone;
  * Created by Petr Lorenc[Lorenc55Petr@seznam.cz] on {8/21/2015}
  **/
 @ParseClassName("ReportInspector")
-public class ReportInspector extends ParseObject implements ClusterItem {
+public class ReportInspector extends ParseObject{
 	public static final String TAG = ReportInspector.class.getName();
 
 	private static final String LOCATION = "Location";
@@ -66,29 +66,22 @@ public class ReportInspector extends ParseObject implements ClusterItem {
 		return mPosition;
 	}
 
-	public Marker getMarker(GoogleMap map){
+	public void setMarker(GoogleMap map){
 		if(mMarker == null){
 			mMarker = map.addMarker(new MarkerOptions().
 					position(mPosition != null ? mPosition : getLocation()).
 					title(getTypeOfVehicle()));
 		}
-		return mMarker;
+	}
+
+	public void removeMarker(){
+		if(mMarker != null){
+			mMarker.remove();
+		}
 	}
 
 	public static ParseQuery<ReportInspector> getQuery(){
 		return ParseQuery.getQuery(ReportInspector.class);
-	}
-
-	/**
-	 * Cluster item override - to make cluster point on map
-	 * @return
-	 */
-	@Override
-	public LatLng getPosition() {
-		if(mPosition != null){
-			return mPosition;
-		}
-		return getLocation();
 	}
 
 	public interface TypeOfVehicle {

@@ -34,6 +34,9 @@ public class MyUpdatingService extends Service implements LocationHelper.Locatio
 	public static final String TAG = MyUpdatingService.class.getName();
 
 	public static final String SERVICE_START = "cz.united121.android.revizori,service.MyUpdatingService.START";
+	/**
+	 * For forcing service to check for new report in database
+	 */
 	public static final String SERVICE_FORCE = "cz.united121.android.revizori,service.MyUpdatingService.FORCE_START";
 	public static final String SERVICE_STOP = "cz.united121.android.revizori.service.MyUpdatingService.STOP";
 
@@ -57,7 +60,7 @@ public class MyUpdatingService extends Service implements LocationHelper.Locatio
 			if (mLastKnownPosition != null) {
 				LOCATION_APROVAL = false;
 				Log.d(TAG, "mTimeAproving");
-				new UpdatingMapAsyncTask(getApplicationContext()).execute(mLastKnownPosition);
+				new UpdatingMapAsyncTask(MyUpdatingService.this).execute(mLastKnownPosition);
 			}
 		}
 	};
@@ -97,12 +100,14 @@ public class MyUpdatingService extends Service implements LocationHelper.Locatio
 			if (mLastKnownPosition != null) {
 				mTimeAproving.run();
 			}
-		}
-		if (intent.getAction().equals(SERVICE_START)) {
+		} else if (intent.getAction().equals(SERVICE_START)) {
 			mUpdatingTimer.scheduleAtFixedRate(mTimeAproving, 0, PERIOD_BETWEEN_UPDATING);
 		} else if (intent.getAction().equals(SERVICE_STOP)) {
+			LOCATION_APROVAL = false;
+			mLastKnownPosition = null;
 			mUpdatingTimer.cancel();
 			mUpdatingTimer.purge();
+			stopSelf();
 		}
 		return START_STICKY;
 	}
@@ -132,11 +137,11 @@ public class MyUpdatingService extends Service implements LocationHelper.Locatio
 
 		public final String TAG = UpdatingMapAsyncTask.class.getName();
 		private final String RESPONSE_KEY = "RESULT";
+		private final String RESPONSE_DATA_KEY = "DATA";
 		private final String PARAMS_LOCATION = "point";
 		private final String PARAMS_DISTANCE = "distance";
-		private final String RESPONSE_DATA_KEY = "DATA";
 
-		private final float mDistance = 20.0f;
+		private final float mDistanceInKm = 20.0f;
 
 		private Context mContext;
 
@@ -153,7 +158,7 @@ public class MyUpdatingService extends Service implements LocationHelper.Locatio
 			Map<String, Object> paramsToCloud = new HashMap<>();
 			ParseGeoPoint parseGeoPoint = new ParseGeoPoint(params[0].getLatitude(), params[0].getLongitude());
 			paramsToCloud.put(PARAMS_LOCATION, parseGeoPoint);
-			paramsToCloud.put(PARAMS_DISTANCE, mDistance);
+			paramsToCloud.put(PARAMS_DISTANCE, mDistanceInKm);
 			try {
 				HashMap<String, Object> response = ParseCloud.callFunction("downloadRelevantData", paramsToCloud);
 				Boolean responseResult = (Boolean) response.get(RESPONSE_KEY);
@@ -175,11 +180,9 @@ public class MyUpdatingService extends Service implements LocationHelper.Locatio
 		protected void onPostExecute(List<ReportInspector> nearestInspector) {
 			super.onPostExecute(nearestInspector);
 			Log.d(TAG, "onPostExecute: nearestInspector.size = " + nearestInspector.size());
-			if (nearestInspector.size() != 0) {
-				LocationGetter.deleteAllReports();
-				LocationGetter.addReports(nearestInspector);
-				mContext.sendBroadcast(new Intent(FullMapFragment.BROADCAST_TO_REFRESH_MAP));
-			}
+			LocationGetter.deleteAllReports();
+			LocationGetter.addReports(nearestInspector);
+			mContext.sendBroadcast(new Intent(FullMapFragment.BROADCAST_TO_REFRESH_MAP));
 		}
 	}
 
