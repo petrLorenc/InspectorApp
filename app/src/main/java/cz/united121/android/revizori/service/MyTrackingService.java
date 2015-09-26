@@ -204,7 +204,7 @@ public class MyTrackingService extends Service implements LocationHelper.Locatio
 			super.onPostExecute(nearestInspector);
 			Log.d(TAG, "onPostExecute: nearestInspector.size = " + nearestInspector.size());
 			if (nearestInspector.size() != 0) {
-				LocationGetter.addReports(nearestInspector);
+				LocationGetter.refreshReportsTo(nearestInspector);
 				Util.makeNotification(mContext, "REVIZOR JE BLIZKO", "V okoli Vasi pozice byl pred nedavnou dobou spatren revizor", "Radeji davejte bacha", MapActivity.class);
 			}
 		}

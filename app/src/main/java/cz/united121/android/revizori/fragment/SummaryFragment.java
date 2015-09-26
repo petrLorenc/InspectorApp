@@ -57,14 +57,14 @@ public class SummaryFragment extends BaseFragment {
 		double latitude = passArg.getDouble(BUNDLE_LATITUDE, 0.0);
 		double longitude = passArg.getDouble(BUNDLE_LONGITUDE, 0.0);
 		String typeOfVehicle = passArg.getString(BUNDLE_TYPEOFVEHICLE, ReportInspector.TypeOfVehicle
-				.BUS); // default is BUS
+				.BUS.toString()); // default is BUS
 		String nameOfStation = passArg.getString(BUNDLE_NAMEOFSTATION,"Neznámá"); // only for metro
 
 		mReportInspector = new ReportInspector(
 				ParseUser.getCurrentUser(),
 				new ParseGeoPoint(passArg.getDouble(BUNDLE_LATITUDE,0.0),
 						          passArg.getDouble(BUNDLE_LONGITUDE, 0.0)),
-				passArg.getString(BUNDLE_TYPEOFVEHICLE,ReportInspector.TypeOfVehicle.BUS));
+				passArg.getString(BUNDLE_TYPEOFVEHICLE, ReportInspector.TypeOfVehicle.BUS.toString()));
 				// default is BUS);
 		mSummary.setText(nameOfStation + " LAT : " + latitude + " LONG : " + longitude + " TYPE " +
 				": " + typeOfVehicle);

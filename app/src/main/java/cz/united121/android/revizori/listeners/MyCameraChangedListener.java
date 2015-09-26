@@ -71,7 +71,7 @@ public class MyCameraChangedListener implements GoogleMap.OnCameraChangeListener
 					Log.d(TAG, "downloadRelevantData return false");
 					return;
 				}
-				LocationGetter.addReports((List<ReportInspector>) hashResponse.get(RESPONSE_DATA_KEY));
+				LocationGetter.refreshReportsTo((List<ReportInspector>) hashResponse.get(RESPONSE_DATA_KEY));
 				mClusterManager.clearItems();
 				mClusterManager.addItems(LocationGetter.getReports());
 			}

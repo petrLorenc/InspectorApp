@@ -18,10 +18,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.maps.android.MarkerManager;
-import com.google.maps.android.clustering.ClusterManager;
-import com.google.maps.android.clustering.algo.NonHierarchicalDistanceBasedAlgorithm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,19 +56,18 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 	public ImageView mReportingTram;
 	@Bind(R.id.reporting_insperctor_metro)
 	public ImageView mReportingMetro;
+	private List<ReportInspector> listPIncpectorObj = new ArrayList<>();
 	private MapFragment mMapFragment;
 	private GoogleMap mGoogleMap;
-
 	private BroadcastReceiver myRefrestMapBroadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			Log.d(TAG, "onReceive");
-
-			mGoogleMap.clear();
-
+			Log.d(TAG, "LocationGetter.getReports().size == " + LocationGetter.getReports().size());
 			for(ReportInspector reportInspector : LocationGetter.getReports()){
 				reportInspector.setMarker(mGoogleMap);
 			}
+
 		}
 	};
 	private MyMultipleCameraChangeListener mMyMultipleCameraChangeListener;
@@ -198,6 +193,7 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 			}
 		});
 		this.mGoogleMap.setMyLocationEnabled(true);
+
 	}
 
 	@OnClick(R.id.reporting_insperctor)
@@ -220,7 +216,7 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 		}
 //		//check if we can use last known position
 		if (mLastKnownLocation != null && isLocationValid) {
-			changeFragmentToSummary(mLastKnownLocation, ReportInspector.TypeOfVehicle.BUS);
+			changeFragmentToSummary(mLastKnownLocation, ReportInspector.TypeOfVehicle.BUS.toString());
 		} else {
 			Util.makeAlertDialogOnlyOK(getActivity(), getString(R.string.full_map_problem_with_position));
 			return;
@@ -235,7 +231,7 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 		}
 		//check if we can use last known position
 		if (mLastKnownLocation != null && isLocationValid) {
-			changeFragmentToSummary(mLastKnownLocation, ReportInspector.TypeOfVehicle.TRAM);
+			changeFragmentToSummary(mLastKnownLocation, ReportInspector.TypeOfVehicle.TRAM.toString());
 		} else {
 			Util.makeAlertDialogOnlyOK(getActivity(), getString(R.string.full_map_problem_with_position));
 			return;

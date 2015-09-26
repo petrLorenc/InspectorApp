@@ -180,8 +180,8 @@ public class MyUpdatingService extends Service implements LocationHelper.Locatio
 		protected void onPostExecute(List<ReportInspector> nearestInspector) {
 			super.onPostExecute(nearestInspector);
 			Log.d(TAG, "onPostExecute: nearestInspector.size = " + nearestInspector.size());
-			LocationGetter.deleteAllReports();
-			LocationGetter.addReports(nearestInspector);
+			//LocationGetter.deleteRedundantReports(nearestInspector);
+			LocationGetter.refreshReportsTo(nearestInspector);
 			mContext.sendBroadcast(new Intent(FullMapFragment.BROADCAST_TO_REFRESH_MAP));
 		}
 	}

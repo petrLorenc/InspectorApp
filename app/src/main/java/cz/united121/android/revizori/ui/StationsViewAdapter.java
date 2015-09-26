@@ -18,7 +18,6 @@ import cz.united121.android.revizori.activity.base.BaseActivity;
 import cz.united121.android.revizori.fragment.SummaryFragment;
 import cz.united121.android.revizori.model.ReportInspector;
 import cz.united121.android.revizori.model.Station;
-import cz.united121.android.revizori.ui.helper.CursorViewAdapter;
 import cz.united121.android.revizori.ui.helper.FilterableViewAdapter;
 
 /**
@@ -57,9 +56,8 @@ public class StationsViewAdapter extends FilterableViewAdapter<StationsViewAdapt
 
 		@Bind(R.id.rv_row_name)
 		public TextView mNameOfStation;
-
-		Activity mActivity;
 		public Station mStation;
+		Activity mActivity;
 
 		public ViewHolder(View itemView, Activity activity) {
 			super(itemView);
@@ -78,7 +76,7 @@ public class StationsViewAdapter extends FilterableViewAdapter<StationsViewAdapt
 				bundle.putDouble(SummaryFragment.BUNDLE_LATITUDE,mStation.getLatitude());
 				bundle.putDouble(SummaryFragment.BUNDLE_LONGITUDE,mStation.getLongtitude());
 				bundle.putString(SummaryFragment.BUNDLE_TYPEOFVEHICLE, ReportInspector
-						.TypeOfVehicle.METRO);
+						.TypeOfVehicle.METRO.toString());
 				bundle.putString(SummaryFragment.BUNDLE_NAMEOFSTATION, mStation.getName());
 				((BaseActivity) mActivity).changeFragment(SummaryFragment.class.getName(),bundle);
 			}

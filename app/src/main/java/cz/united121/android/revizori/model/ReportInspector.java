@@ -19,7 +19,7 @@ import java.util.TimeZone;
  * Created by Petr Lorenc[Lorenc55Petr@seznam.cz] on {8/21/2015}
  **/
 @ParseClassName("ReportInspector")
-public class ReportInspector extends ParseObject{
+public class ReportInspector extends ParseObject implements ClusterItem {
 	public static final String TAG = ReportInspector.class.getName();
 
 	private static final String LOCATION = "Location";
@@ -50,12 +50,18 @@ public class ReportInspector extends ParseObject{
 		put(TYPEOFVEHICLE, typeOfVehicle);
 	}
 
+	public static ParseQuery<ReportInspector> getQuery() {
+		return ParseQuery.getQuery(ReportInspector.class);
+	}
+
 	public void setComment(String comment) {
 		put(COMMENT, comment);
 	}
+
 	public void setNameOfStation(String nameOfStation) {
 		put(NAME_OF_STATION, nameOfStation);
 	}
+
 	public String getTypeOfVehicle(){
 		return getString(TYPEOFVEHICLE);
 	}
@@ -67,11 +73,9 @@ public class ReportInspector extends ParseObject{
 	}
 
 	public void setMarker(GoogleMap map){
-		if(mMarker == null){
-			mMarker = map.addMarker(new MarkerOptions().
-					position(mPosition != null ? mPosition : getLocation()).
-					title(getTypeOfVehicle()));
-		}
+		mMarker = map.addMarker(new MarkerOptions().
+				position(mPosition != null ? mPosition : getLocation()).
+				title(getTypeOfVehicle()));
 	}
 
 	public void removeMarker(){
@@ -80,14 +84,26 @@ public class ReportInspector extends ParseObject{
 		}
 	}
 
-	public static ParseQuery<ReportInspector> getQuery(){
-		return ParseQuery.getQuery(ReportInspector.class);
+	@Override
+	public LatLng getPosition() {
+		return ((mPosition != null) ? mPosition : getLocation());
 	}
 
-	public interface TypeOfVehicle {
+	public enum TypeOfVehicle {
 
-		String METRO = "Metro";
-		String BUS = "Bus";
-		String TRAM = "Tram";
+		METRO("Metro"),
+		BUS("Bus"),
+		TRAM("Tram");
+
+		private String name;
+
+		private TypeOfVehicle(String name) {
+			this.name = name;
+		}
+
+		@Override
+		public String toString() {
+			return name;
+		}
 	}
 }
