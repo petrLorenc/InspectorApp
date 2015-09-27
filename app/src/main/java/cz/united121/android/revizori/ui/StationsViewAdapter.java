@@ -45,7 +45,7 @@ public class StationsViewAdapter extends FilterableViewAdapter<StationsViewAdapt
 	public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
 		Log.d(TAG, "onCreateViewHolder");
 		View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout
-				.recycler_view_row_stations,viewGroup,false);
+				.widget_row_stations, viewGroup, false);
 		ViewHolder viewHolder = new ViewHolder(view, mActivity);
 		return viewHolder;
 	}

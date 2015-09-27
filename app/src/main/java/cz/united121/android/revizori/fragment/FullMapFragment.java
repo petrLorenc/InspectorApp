@@ -31,6 +31,7 @@ import cz.united121.android.revizori.activity.MapActivity;
 import cz.united121.android.revizori.activity.base.BaseActivity;
 import cz.united121.android.revizori.fragment.base.BaseFragment;
 import cz.united121.android.revizori.fragment.dialog.AlertDialogFragment;
+import cz.united121.android.revizori.fragment.dialog.ChooseTransportDialogFragment;
 import cz.united121.android.revizori.helper.LocationHelper;
 import cz.united121.android.revizori.listeners.helper.MyMultipleCameraChangeListener;
 import cz.united121.android.revizori.model.ReportInspector;
@@ -44,7 +45,7 @@ import cz.united121.android.revizori.util.Util;
  * Created by Petr Lorenc[Lorenc55Petr@seznam.cz] on {13.8.2015}
  */
 public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
-		AlertDialogFragment.OnClickListener, LocationHelper.LocationHelperInterface {
+		AlertDialogFragment.AlertOnClickListener, LocationHelper.LocationHelperInterface, ChooseTransportDialogFragment.ChooseTransportInterface {
 	public static final String TAG = FullMapFragment.class.getName();
 	public static final String BROADCAST_TO_REFRESH_MAP = "cz.united121.android.revizori.fragment.refrestMap";
 	private static View cachedView;
@@ -59,6 +60,7 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 	private List<ReportInspector> listPIncpectorObj = new ArrayList<>();
 	private MapFragment mMapFragment;
 	private GoogleMap mGoogleMap;
+
 	private BroadcastReceiver myRefrestMapBroadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -67,9 +69,9 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 			for(ReportInspector reportInspector : LocationGetter.getReports()){
 				reportInspector.setMarker(mGoogleMap);
 			}
-
 		}
 	};
+
 	private MyMultipleCameraChangeListener mMyMultipleCameraChangeListener;
 	private LocationHelper mLocationHelper;
 
@@ -199,43 +201,9 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 	@OnClick(R.id.reporting_insperctor)
 	public void reportingInspector(View view) {
 		Log.d(TAG, "reportingInspector");
-		//TODO TEST
-		//doMapUpdate();
-		mReportingGeneral.setVisibility(View.GONE);
-		mReportingBus.setVisibility(View.VISIBLE);
-		mReportingTram.setVisibility(View.VISIBLE);
-		mReportingMetro.setVisibility(View.VISIBLE);
-
-	}
-
-	@OnClick(R.id.reporting_insperctor_bus)
-	public void reportingInspectorBus(View view) {
-		Log.d(TAG, "reportingInspectorBus");
-		if (!checkingStatus()) {
-			return;
-		}
-//		//check if we can use last known position
-		if (mLastKnownLocation != null && isLocationValid) {
-			changeFragmentToSummary(mLastKnownLocation, ReportInspector.TypeOfVehicle.BUS.toString());
-		} else {
-			Util.makeAlertDialogOnlyOK(getActivity(), getString(R.string.full_map_problem_with_position));
-			return;
-		}
-	}
-
-	@OnClick(R.id.reporting_insperctor_tram)
-	public void reportingInspectorTram(View view) {
-		Log.d(TAG, "reportingInspectorTram");
-		if (!checkingStatus()) {
-			return;
-		}
-		//check if we can use last known position
-		if (mLastKnownLocation != null && isLocationValid) {
-			changeFragmentToSummary(mLastKnownLocation, ReportInspector.TypeOfVehicle.TRAM.toString());
-		} else {
-			Util.makeAlertDialogOnlyOK(getActivity(), getString(R.string.full_map_problem_with_position));
-			return;
-		}
+		ChooseTransportDialogFragment chooseTransportDialogFragment =
+				ChooseTransportDialogFragment.newInstance(this);
+		chooseTransportDialogFragment.show(getFragmentManager(), "alertDialog");
 	}
 
 	private boolean checkingStatus() {
@@ -249,12 +217,6 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 			return false;
 		}
 		return true;
-	}
-
-	@OnClick(R.id.reporting_insperctor_metro)
-	public void reportingInspectorMetro(View view) {
-		Log.d(TAG, "reportingInspectorMetro");
-		((MapActivity) getActivity()).changeFragment(MetroStationsFragment.class.getName());
 	}
 
 	private void changeFragmentToSummary(Location location, String typeOfVehicle) {
@@ -302,5 +264,41 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 	public void OnConnectionFailed() {
 		Log.d(TAG, "OnConnectionFailed");
 		isLocationValid = false;
+	}
+
+	@Override
+	public void OnChoosingMetro(View clickedView) {
+		Log.d(TAG, "OnChoosingMetro");
+		((MapActivity) getActivity()).changeFragment(MetroStationsFragment.class.getName());
+	}
+
+	@Override
+	public void OnChoosingTram(View clickedView) {
+		Log.d(TAG, "OnChoosingTram");
+		if (!checkingStatus()) {
+			return;
+		}
+		//check if we can use last known position
+		if (mLastKnownLocation != null && isLocationValid) {
+			changeFragmentToSummary(mLastKnownLocation, ReportInspector.TypeOfVehicle.TRAM.toString());
+		} else {
+			Util.makeAlertDialogOnlyOK(getActivity(), getString(R.string.full_map_problem_with_position));
+			return;
+		}
+	}
+
+	@Override
+	public void OnChoosingBus(View clickedView) {
+		Log.d(TAG, "OnChoosingBus");
+		if (!checkingStatus()) {
+			return;
+		}
+//		//check if we can use last known position
+		if (mLastKnownLocation != null && isLocationValid) {
+			changeFragmentToSummary(mLastKnownLocation, ReportInspector.TypeOfVehicle.BUS.toString());
+		} else {
+			Util.makeAlertDialogOnlyOK(getActivity(), getString(R.string.full_map_problem_with_position));
+			return;
+		}
 	}
 }

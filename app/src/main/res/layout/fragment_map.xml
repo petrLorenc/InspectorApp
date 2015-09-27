@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fragment_map_coordinator_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -20,11 +19,12 @@
         android:id="@+id/reporting_insperctor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
+        android:layout_gravity="bottom|right"
         android:layout_margin="20dp"
+        android:background="@drawable/bg_circle"
         android:clickable="true"
         android:focusable="true"
-        android:background="?android:attr/selectableItemBackground"
+        android:padding="20dp"
         android:src="@drawable/reporting_inspector"/>
 
     <ImageView
@@ -33,11 +33,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|left"
         android:layout_margin="20dp"
-        android:visibility="invisible"
+        android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:background="?android:attr/selectableItemBackground"
-        android:src="@drawable/reporting_bus"/>
+        android:src="@drawable/reporting_bus"
+        android:visibility="invisible"/>
 
     <ImageView
         android:id="@+id/reporting_insperctor_tram"
@@ -45,11 +45,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
         android:layout_margin="20dp"
-        android:visibility="invisible"
+        android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:background="?android:attr/selectableItemBackground"
-        android:src="@drawable/reporting_tram"/>
+        android:src="@drawable/reporting_tram"
+        android:visibility="invisible"/>
 
     <ImageView
         android:id="@+id/reporting_insperctor_metro"
@@ -57,10 +57,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:layout_margin="20dp"
-        android:visibility="invisible"
+        android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:background="?android:attr/selectableItemBackground"
-        android:src="@drawable/reporting_metro"/>
+        android:src="@drawable/reporting_metro"
+        android:visibility="invisible"/>
 
 </android.support.design.widget.CoordinatorLayout>

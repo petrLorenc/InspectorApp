@@ -52,16 +52,12 @@ public class MyTrackingService extends Service implements LocationHelper.Locatio
 	private LocationHelper mLocationManager;
 	private Location mLastKnownPosition;
 
-	/**
-	 * We call check position for one position only once ( if there is no location change = no calling )
-	 */
-	private boolean mValid;
 	private Timer mTimer;
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		super.onStartCommand(intent, flags, startId);
-		Log.d(TAG, "onStartCommand");
+		Log.d(TAG, "onStartCommand" + intent.getAction());
 		if (intent.getAction().equals(SERVICE_START)) {
 			shouldBeRunning = true;
 			//To make close button
@@ -76,16 +72,16 @@ public class MyTrackingService extends Service implements LocationHelper.Locatio
 			PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, maintIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 			Notification notification = new NotificationCompat.Builder(this)
-					.setContentTitle("Prohledavani okoli proti revizorum")
-					.setTicker("Skenovani okoli a hledani rizik vyskytu revizora")
-					.setContentText("Revizori")
-					.setSmallIcon(R.drawable.a_letter)
+					.setContentTitle("Hledaní revizorů v okolí.")
+					.setTicker("Hledaní revizorů v okolí.")
+					.setContentText("Skenovaní okolí pro hlášení rizik výskytu revizora.")
+					.setSmallIcon(R.drawable.ic_stat_action_find_replace)
 					.setLargeIcon(
-							BitmapFactory.decodeResource(getResources(), R.drawable.b_letter))
+							BitmapFactory.decodeResource(getResources(), R.drawable.icon_spy_128))
 					.setContentIntent(resultPendingIntent)
 					.setPriority(NotificationCompat.PRIORITY_MAX)
 					.setOngoing(true)
-					.addAction(R.drawable.c_letter, "Vypnout", pCloseIntent)
+					.addAction(R.drawable.ic_stat_action_highlight_remove, "Vypnout", pCloseIntent)
 					.build();
 
 			startForeground(ID, notification);
@@ -96,7 +92,7 @@ public class MyTrackingService extends Service implements LocationHelper.Locatio
 			stopForeground(true);
 			stopSelf();
 		}
-		return START_STICKY;
+		return START_REDELIVER_INTENT;
 	}
 
 	@Nullable
@@ -117,10 +113,11 @@ public class MyTrackingService extends Service implements LocationHelper.Locatio
 		TimerTask timerTask = new TimerTask() {
 			@Override
 			public void run() {
-				Log.d(TAG, "run == " + (mValid && shouldBeRunning));
-				if (mValid && shouldBeRunning) {
+				if (shouldBeRunning && mLastKnownPosition != null) {
+					Log.d(TAG, "mLastKnownPosition == " + mLastKnownPosition.getLatitude() + ":" + mLastKnownPosition.getLongitude());
 					new ControlPosition(context).execute(mLastKnownPosition);
-					mValid = false;
+				} else {
+					Log.d(TAG, "no running");
 				}
 			}
 		};
@@ -140,20 +137,19 @@ public class MyTrackingService extends Service implements LocationHelper.Locatio
 	@Override
 	public void OnLocationChanged(Location location) {
 		Log.d(TAG, "OnLocationChanged");
-		mLastKnownPosition = location;
-		mValid = true;
+		if (location != null && !location.equals(mLastKnownPosition)) {
+			mLastKnownPosition = location;
+		}
 	}
 
 	@Override
 	public void OnLocationGetFailed() {
 		Log.d(TAG, "OnLocationGetFailed");
-		mValid = false;
 	}
 
 	@Override
 	public void OnConnectionFailed() {
 		Log.d(TAG, "OnConnectionFailed");
-		mValid = false;
 	}
 
 	public class ControlPosition extends AsyncTask<Location, Void, List<ReportInspector>> {
@@ -164,7 +160,7 @@ public class MyTrackingService extends Service implements LocationHelper.Locatio
 		private final String PARAMS_DISTANCE = "distance";
 		private final String RESPONSE_DATA_KEY = "DATA";
 
-		private final float mDistance = 0.5f;
+		private final float mDistanceInKm = 1.0f;
 
 		private Context mContext;
 
@@ -181,7 +177,7 @@ public class MyTrackingService extends Service implements LocationHelper.Locatio
 			Map<String, Object> paramsToCloud = new HashMap<>();
 			ParseGeoPoint parseGeoPoint = new ParseGeoPoint(params[0].getLatitude(), params[0].getLongitude());
 			paramsToCloud.put(PARAMS_LOCATION, parseGeoPoint);
-			paramsToCloud.put(PARAMS_DISTANCE, mDistance);
+			paramsToCloud.put(PARAMS_DISTANCE, mDistanceInKm);
 			try {
 				HashMap<String, Object> response = ParseCloud.callFunction("downloadRelevantData", paramsToCloud);
 				Boolean responseResult = (Boolean) response.get(RESPONSE_KEY);
@@ -205,7 +201,7 @@ public class MyTrackingService extends Service implements LocationHelper.Locatio
 			Log.d(TAG, "onPostExecute: nearestInspector.size = " + nearestInspector.size());
 			if (nearestInspector.size() != 0) {
 				LocationGetter.refreshReportsTo(nearestInspector);
-				Util.makeNotification(mContext, "REVIZOR JE BLIZKO", "V okoli Vasi pozice byl pred nedavnou dobou spatren revizor", "Radeji davejte bacha", MapActivity.class);
+				Util.makeNotification(mContext, "Pozor, revizor je blízko.", "Nedaleko Vaší pozice byl nedávno spatřen revizor.", "Pozor, revizor je blízko.", MapActivity.class);
 			}
 		}
 	}

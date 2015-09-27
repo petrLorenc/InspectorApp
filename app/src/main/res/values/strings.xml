@@ -24,7 +24,8 @@
     <string name="full_map_problem_with_position">Bohužel nebylo možné zaznamenat Vaši polohu.
         Opakujte akci prosím pozdějí. Omlouváme se a děkujeme. </string>
     <string name="summary_button_back_to_map">Uložit a zpátky na mapu</string>
-    <string name="summary_thanks_and_request">Děkujeme za Váše hlášení revizora. Určitě bude ostatními uživateli oceněno. Dále bych Vás chtěl požádat o poskytnutí krátkého komentáře týkajícího se Vašeho hlášení (jak revizor vypadal, cislo linkz, blizkost zastavky apod.)</string>
-    <string name="summerry_hint_comment_text_edit">Komentář</string>
+    <string name="summary_thanks_and_request"><![CDATA[<b>Děkujeme</b> za Váše hlášení. Ceníme si toho.<br/> Dále bychom Vás chtěli požádat o poskytnutí <b>krátkého komentáře</b> o Vašem hlášení.]]></string>
+    <string name="summerry_hint_comment_text_edit">Jak revizor vypadal? Číslo linky i další okolnosti jsou vítané …</string>
     <string name="login_login_to_network_settings">Nejste online prosim pripojte se.</string>
+    <string name="choose_tranport_title">Kde jste videli revizora?</string>
 </resources>

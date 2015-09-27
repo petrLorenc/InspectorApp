@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--Main color-->
-    <color name="primaryDark">#3F51B5</color>
-    <color name="primary">#2196F3</color>
-    <color name="primary50Transparent">#442196F3</color>
+    <!--<color name="primaryDark">#3F51B5</color>-->
+    <color name="primaryDark">#d15524</color>
+    <color name="primaryDark50">#96d15524</color>
+    <!--<color name="primary">#2196F3</color>-->
+    <color name="primary">#e8983c</color>
+    <color name="primary50Transparent">#44e8983c</color>
     <color name="primaryLight">#B2EBFE</color>
     <color name="accent">#FF9800</color>
     <color name="accentLight">#FFF59D</color>
@@ -13,4 +16,8 @@
     <color name="black">#000000</color>
     <color name="blue_tranparent">#550000FF</color>
     <color name="transparent">#00000000</color>
+
+    <color name="dialog_text">@color/white</color>
+    <color name="circle_background">@color/primaryDark50</color>
+    <color name="circle_background_around">@color/primaryDark</color>
 </resources>

@@ -2,10 +2,12 @@ package cz.united121.android.revizori.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.parse.ParseGeoPoint;
@@ -32,7 +34,9 @@ public class SummaryFragment extends BaseFragment {
 	public static final String BUNDLE_NAMEOFSTATION = "sum_nameOfStation";
 
 	@Bind(R.id.summary_text_view)
-	TextView mSummary;
+	EditText mSummary;
+	@Bind(R.id.summary_text_view_thanks)
+	TextView mThanksText;
 
 	private ReportInspector mReportInspector;
 
@@ -48,7 +52,10 @@ public class SummaryFragment extends BaseFragment {
 		View view =  super.onCreateView(inflater, container, savedInstanceState);
 		Log.d(TAG, "onCreateView");
 
-		ButterKnife.bind(this,view);
+		ButterKnife.bind(this, view);
+
+		mThanksText.setText(Html.fromHtml(getString(R.string.summary_thanks_and_request)));
+
 		Bundle passArg = getArguments();
 		if(passArg == null){
 			mSummary.setText("Nic");

@@ -10,21 +10,22 @@
         android:gravity="center"
         android:padding="5dp"
         android:text="@string/choose_metro_fragment"
-        android:textSize="@dimen/choose_metro_title_size"/>
+        android:textSize="@dimen/choose_metro_title_size"
+        android:textStyle="bold"/>
 
     <SearchView
         android:id="@+id/choosing_metro_search_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:iconifiedByDefault="false"
+        android:queryHint="Hledej"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_metros"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="20dp"
-        android:background="@drawable/bg_recycler_view"
         android:clickable="true"
         android:focusable="true"
-        android:padding="20dp"
+        android:padding="@dimen/global_padding"
         android:scrollbars="vertical"/>
 </LinearLayout>

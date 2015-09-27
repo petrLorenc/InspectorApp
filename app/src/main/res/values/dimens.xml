@@ -4,10 +4,12 @@
     <dimen name="global_status_bar_height">24dp</dimen>
     <dimen name="register_text_view_title">20sp</dimen>
     <dimen name="login_text_view_title">20sp</dimen>
-    <dimen name="choose_metro_title_size">20sp</dimen>
+    <dimen name="choose_metro_title_size">@dimen/text_l</dimen>
     <dimen name="summary_fragment_top_botton_padding">20dp</dimen>
     <dimen name="summary_fragment_padding">20dp</dimen>
     <dimen name="summary_fragment_margin">20dp</dimen>
+
+    <dimen name="alert_button_text">@dimen/text_xxl</dimen>
 
     <dimen name="text_s">15sp</dimen>
     <dimen name="text_m">20sp</dimen>
@@ -16,5 +18,6 @@
     <dimen name="text_xxl">28sp</dimen>
     <dimen name="text_xxxl">32sp</dimen>
     <dimen name="text_4l">35sp</dimen>
+    <dimen name="global_padding">20dp</dimen>
 
 </resources>

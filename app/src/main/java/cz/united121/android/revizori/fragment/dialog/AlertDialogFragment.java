@@ -39,7 +39,7 @@ public class AlertDialogFragment extends DialogFragment {
 	@Bind(R.id.alert_dialog_no_button)
 	Button noButton;
 
-	OnClickListener mOnClickListener;
+	AlertOnClickListener mAlertOnClickListener;
 
 	public static AlertDialogFragment newInstance(Fragment targetFragment,
 												  String title,
@@ -69,7 +69,11 @@ public class AlertDialogFragment extends DialogFragment {
 		View view = inflater.inflate(R.layout.dialog_fragment_alert,container,false);
 		ButterKnife.bind(this, view);
 
-		mOnClickListener = (OnClickListener) getTargetFragment();
+		try {
+			mAlertOnClickListener = (AlertOnClickListener) getTargetFragment();
+		}catch (ClassCastException e){
+			throw new ClassCastException("Target fragment have to implement AlertOnClickListener");
+		}
 
 		titleView.setText(getArguments().getString(ARG_TITLE));
 		descriptionView.setText(getArguments().getString(ARG_DESC));
@@ -96,14 +100,14 @@ public class AlertDialogFragment extends DialogFragment {
 
 	@OnClick(R.id.alert_dialog_yes_button)
 	public void onYesClick(View view){
-		mOnClickListener.onPositiveClick(this);
+		mAlertOnClickListener.onPositiveClick(this);
 	}
 	@OnClick(R.id.alert_dialog_no_button)
 	public void onNoClick(View view){
-		mOnClickListener.onNegativeClick(this);
+		mAlertOnClickListener.onNegativeClick(this);
 	}
 
-	public interface OnClickListener {
+	public interface AlertOnClickListener {
 		void onPositiveClick(AlertDialogFragment dialogFragment);
 
 		void onNegativeClick(AlertDialogFragment dialogFragment);

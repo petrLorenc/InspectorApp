@@ -82,7 +82,7 @@ public class Util {
 
 	public static void makeNotification(Context mContext, String title, String contentText, String ticker, Class toClass) {
 		NotificationCompat.Builder inspectorIsNearNotification = new NotificationCompat.Builder(mContext)
-				.setSmallIcon(R.drawable.reporting_inspector)
+				.setSmallIcon(R.drawable.ic_stat_alert_error)
 				.setContentTitle(title)
 				.setContentText(contentText)
 				.setTicker(ticker)
