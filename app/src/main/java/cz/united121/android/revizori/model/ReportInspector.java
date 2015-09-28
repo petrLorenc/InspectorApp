@@ -97,7 +97,7 @@ public class ReportInspector extends ParseObject implements ClusterItem {
 
 		private String name;
 
-		private TypeOfVehicle(String name) {
+		TypeOfVehicle(String name) {
 			this.name = name;
 		}
 

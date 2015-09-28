@@ -149,11 +149,13 @@ public class MyUpdatingService extends Service implements LocationHelper.Locatio
 			mContext = context;
 		}
 
+		//Class cast exception will be catch
+		@SuppressWarnings("unchecked")
 		@Override
 		protected List<ReportInspector> doInBackground(Location... params) {
 			Log.d(TAG, "doInBackground");
 			if (params.length <= 0 || params[0] == null) {
-				return new ArrayList<ReportInspector>();
+				return new ArrayList<>();
 			}
 			Map<String, Object> paramsToCloud = new HashMap<>();
 			ParseGeoPoint parseGeoPoint = new ParseGeoPoint(params[0].getLatitude(), params[0].getLongitude());
@@ -173,7 +175,7 @@ public class MyUpdatingService extends Service implements LocationHelper.Locatio
 				e.printStackTrace();
 
 			}
-			return new ArrayList<ReportInspector>();
+			return new ArrayList<>();
 		}
 
 		@Override

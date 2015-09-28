@@ -8,8 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import cz.united121.android.revizori.R;
-
 /**
  * TODO add class description
  * Created by Petr Lorenc[Lorenc55Petr@seznam.cz] on {6.8.2015}

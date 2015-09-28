@@ -1,8 +1,5 @@
 package cz.united121.android.revizori.activity;
 
-import android.os.Bundle;
-import android.util.Log;
-
 import cz.united121.android.revizori.activity.base.BaseActivity;
 import cz.united121.android.revizori.fragment.FullMapFragment;
 
@@ -17,30 +14,5 @@ public class MapActivity extends BaseActivity {
     protected String getFragmentName() {
         return FullMapFragment.class.getName();
     }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-		Log.d(TAG, "onCreate");
-		//startService(new Intent(this, MyTrackingService.class));
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		Log.d(TAG, "onDestroy");
-		//stopService(new Intent(this, MyTrackingService.class));
-	}
-
-	@Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
 
 }

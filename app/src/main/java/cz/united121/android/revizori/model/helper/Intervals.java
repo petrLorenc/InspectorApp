@@ -13,7 +13,7 @@ public enum Intervals {
 	private String stringValue;
 	private float mMinutes;
 
-	private Intervals(String name, float minutes) {
+	Intervals(String name, float minutes) {
 		stringValue = name;
 		this.mMinutes = minutes;
 	}

@@ -1,43 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/primary"
-                android:minHeight="128dp"
+                android:layout_height="128dp"
+                android:background="@drawable/header_primary_dark"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:paddingTop="@dimen/global_status_bar_height">
-
-    <ImageView
-        android:id="@+id/navigation_drawer_image"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:src="@drawable/reporting_inspector"/>
 
     <TextView
         android:id="@+id/navigation_drawer_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/navigation_drawer_image"
         android:ellipsize="marquee"
         android:paddingLeft="5dp"
-        android:paddingTop="10dp"
+        android:paddingTop="5dp"
         android:singleLine="true"
         android:text="TEST TEST"
-        android:textSize="@dimen/text_xl"/>
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_xxxl"/>
 
     <TextView
         android:id="@+id/navigation_drawer_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/navigation_drawer_username"
-        android:layout_toRightOf="@id/navigation_drawer_image"
         android:ellipsize="marquee"
         android:paddingLeft="5dp"
         android:singleLine="true"
         android:text="TEST TEST"
+        android:textColor="@color/white"
         android:textSize="@dimen/text_s"/>
 
 

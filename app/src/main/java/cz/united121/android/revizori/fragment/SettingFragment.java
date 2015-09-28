@@ -10,8 +10,11 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
+import com.parse.ParseUser;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cz.united121.android.revizori.BuildConfig;
 import cz.united121.android.revizori.R;
 import cz.united121.android.revizori.fragment.base.BaseFragment;
@@ -62,4 +65,11 @@ public class SettingFragment extends BaseFragment {
 		return view;
 	}
 
+
+	@OnClick(R.id.setting_button_reset_password)
+	public void resetPassword(View view){
+		ParseUser currentUser = ParseUser.getCurrentUser();
+		ParseUser.requestPasswordResetInBackground(currentUser.getEmail());
+		Util.makeAlertDialogOnlyOK(getActivity(),"Nové heslo bude zasláno na Váš email (" + currentUser.getEmail() + ")." );
+	}
 }

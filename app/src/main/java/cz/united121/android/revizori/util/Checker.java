@@ -29,10 +29,6 @@ public class Checker {
 	public static boolean isOnline(Context context){
 		ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo netInfo = cm.getActiveNetworkInfo();
-		if (netInfo != null && netInfo.isConnected()) {
-			return true;
-		} else {
-			return false;
-		}
+		return (netInfo != null && netInfo.isConnected());
 	}
 }

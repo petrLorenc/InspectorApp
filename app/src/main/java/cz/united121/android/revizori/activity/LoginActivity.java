@@ -4,11 +4,8 @@ import android.content.Intent;
 
 import com.parse.ParseUser;
 
-import cz.united121.android.revizori.activity.base.BaseActivity;
 import cz.united121.android.revizori.activity.base.BaseActivityNoDrawer;
-import cz.united121.android.revizori.fragment.FullMapFragment;
 import cz.united121.android.revizori.fragment.LoginFragment;
-import cz.united121.android.revizori.fragment.RegisterFragment;
 
 /**
  * TODO add class description

@@ -35,7 +35,6 @@ public class MetroStationsFragment extends BaseFragment implements SearchView.On
 
 	@Override
 	public int getLayout() {
-		Log.d(TAG, "getLayout");
 		return R.layout.fragment_recycler_view_metro;
 	}
 
@@ -46,11 +45,11 @@ public class MetroStationsFragment extends BaseFragment implements SearchView.On
 		View view = super.onCreateView(inflater, container, savedInstanceState);
 
 		ButterKnife.bind(this, view);
-		//mRecyclerView.setHasFixedSize(true);
 
 		mLayoutManager = new LinearLayoutManager(getActivity());
 		mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 		mRecyclerView.setLayoutManager(mLayoutManager);
+		mRecyclerView.setHasFixedSize(true);
 
 		mAdapter = new StationsViewAdapter(getActivity(), MyDatabase.getStationsAll(getActivity()));
 		mRecyclerView.setAdapter(mAdapter);
@@ -70,8 +69,6 @@ public class MetroStationsFragment extends BaseFragment implements SearchView.On
 
 	@Override
 	public boolean onQueryTextChange(String newText) {
-		Log.d(TAG, "onQueryTextChange");
-		Log.d(TAG, "query : " + mSearchView.getQuery());
 		mAdapter.getFilter().filter(mSearchView.getQuery());
 		return false;
 	}

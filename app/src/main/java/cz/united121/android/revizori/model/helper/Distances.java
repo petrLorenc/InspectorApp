@@ -12,7 +12,7 @@ public enum Distances {
 	private String stringValue;
 	private float intValue;
 
-	private Distances(String name, float value) {
+	Distances(String name, float value) {
 		stringValue = name;
 		intValue = value;
 	}

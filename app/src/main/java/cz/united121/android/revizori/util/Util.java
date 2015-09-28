@@ -35,7 +35,7 @@ public class Util {
 	}
 
 	public static void makeAlertDialogGPS(final Activity actualActivity, String message) {
-		if (shovingDiaglog == false) {
+		if (!shovingDiaglog) {
 			shovingDiaglog = true;
 		} else {
 			return;
@@ -63,7 +63,7 @@ public class Util {
 	}
 
 	public static void makeAlertDialogOnlyOK(final Activity actualActivity, String message) {
-		if (shovingDiaglog == false) {
+		if (!shovingDiaglog) {
 			shovingDiaglog = true;
 		} else {
 			return;

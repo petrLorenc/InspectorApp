@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
         android:orientation="vertical">
@@ -57,7 +57,8 @@
                     android:id="@+id/login_textview_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/login_edit_password"/>
+                    android:hint="@string/login_edit_password"
+                    android:inputType="textPassword"/>
             </android.support.design.widget.TextInputLayout>
 
             <Button

@@ -37,7 +37,6 @@ import cz.united121.android.revizori.util.Util;
  **/
 public class MyTrackingService extends Service implements LocationHelper.LocationHelperInterface {
 	public static final String TAG = MyTrackingService.class.getName();
-	public static final String SP_RUNNING = "shared_pref_is_running";
 	public static final String SERVICE_START = "cz.united121.android.revizori.service.START";
 	public static final String SERVICE_STOP = "cz.united121.android.revizori.service.STOP";
 
@@ -168,11 +167,13 @@ public class MyTrackingService extends Service implements LocationHelper.Locatio
 			mContext = context;
 		}
 
+		//Class cast exception will be catch
+		@SuppressWarnings("unchecked")
 		@Override
 		protected List<ReportInspector> doInBackground(Location... params) {
 			Log.d(TAG, "doInBackground");
 			if (params.length <= 0 || params[0] == null) {
-				return new ArrayList<ReportInspector>();
+				return new ArrayList<>();
 			}
 			Map<String, Object> paramsToCloud = new HashMap<>();
 			ParseGeoPoint parseGeoPoint = new ParseGeoPoint(params[0].getLatitude(), params[0].getLongitude());
@@ -192,7 +193,7 @@ public class MyTrackingService extends Service implements LocationHelper.Locatio
 				e.printStackTrace();
 
 			}
-			return new ArrayList<ReportInspector>();
+			return new ArrayList<>();
 		}
 
 		@Override

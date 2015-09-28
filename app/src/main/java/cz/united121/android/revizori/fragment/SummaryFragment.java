@@ -30,8 +30,8 @@ public class SummaryFragment extends BaseFragment {
 
 	public static final String BUNDLE_LATITUDE = "sum_latitude";
 	public static final String BUNDLE_LONGITUDE = "sum_longitude";
-	public static final String BUNDLE_TYPEOFVEHICLE = "sum_typeOfVehicle";
-	public static final String BUNDLE_NAMEOFSTATION = "sum_nameOfStation";
+	public static final String BUNDLE_TYPE_OF_VEHICLE = "sum_typeOfVehicle";
+	public static final String BUNDLE_NAME_OF_STATION = "sum_nameOfStation";
 
 	@Bind(R.id.summary_text_view)
 	EditText mSummary;
@@ -58,23 +58,21 @@ public class SummaryFragment extends BaseFragment {
 
 		Bundle passArg = getArguments();
 		if(passArg == null){
-			mSummary.setText("Nic");
 			return view;
 		}
 		double latitude = passArg.getDouble(BUNDLE_LATITUDE, 0.0);
 		double longitude = passArg.getDouble(BUNDLE_LONGITUDE, 0.0);
-		String typeOfVehicle = passArg.getString(BUNDLE_TYPEOFVEHICLE, ReportInspector.TypeOfVehicle
+		String typeOfVehicle = passArg.getString(BUNDLE_TYPE_OF_VEHICLE, ReportInspector.TypeOfVehicle
 				.BUS.toString()); // default is BUS
-		String nameOfStation = passArg.getString(BUNDLE_NAMEOFSTATION,"Neznámá"); // only for metro
+		String nameOfStation = passArg.getString(BUNDLE_NAME_OF_STATION, "Neznámá"); // only for metro
 
 		mReportInspector = new ReportInspector(
 				ParseUser.getCurrentUser(),
 				new ParseGeoPoint(passArg.getDouble(BUNDLE_LATITUDE,0.0),
 						          passArg.getDouble(BUNDLE_LONGITUDE, 0.0)),
-				passArg.getString(BUNDLE_TYPEOFVEHICLE, ReportInspector.TypeOfVehicle.BUS.toString()));
+				passArg.getString(BUNDLE_TYPE_OF_VEHICLE, ReportInspector.TypeOfVehicle.BUS.toString()));
 				// default is BUS);
-		mSummary.setText(nameOfStation + " LAT : " + latitude + " LONG : " + longitude + " TYPE " +
-				": " + typeOfVehicle);
+
 		mReportInspector.setNameOfStation(nameOfStation);
 		mReportInspector.saveEventually();
 

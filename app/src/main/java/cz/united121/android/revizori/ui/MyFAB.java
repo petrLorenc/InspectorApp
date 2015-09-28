@@ -39,8 +39,4 @@ public class MyFAB extends FloatingActionButton {
 		wasClicked = !wasClicked;
 		return super.callOnClick();
 	}
-
-	public boolean isClicked(){
-		return false;
-	}
 }

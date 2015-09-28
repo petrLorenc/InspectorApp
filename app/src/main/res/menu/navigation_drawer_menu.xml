@@ -13,7 +13,7 @@
         <item
             android:id="@+id/drawer_menu_item_about_me"
             android:icon="@drawable/menu_about_me"
-            android:title="@string/drawer_menu_item_about_me"/>
+            android:title="@string/drawer_menu_item_rank"/>
         <item
             android:id="@+id/drawer_menu_item_log_out"
             android:icon="@drawable/menu_logout"

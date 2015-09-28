@@ -46,8 +46,7 @@ public class StationsViewAdapter extends FilterableViewAdapter<StationsViewAdapt
 		Log.d(TAG, "onCreateViewHolder");
 		View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout
 				.widget_row_stations, viewGroup, false);
-		ViewHolder viewHolder = new ViewHolder(view, mActivity);
-		return viewHolder;
+		return new ViewHolder(view, mActivity);
 	}
 
 	public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -75,9 +74,9 @@ public class StationsViewAdapter extends FilterableViewAdapter<StationsViewAdapt
 				Bundle bundle = new Bundle();
 				bundle.putDouble(SummaryFragment.BUNDLE_LATITUDE,mStation.getLatitude());
 				bundle.putDouble(SummaryFragment.BUNDLE_LONGITUDE,mStation.getLongtitude());
-				bundle.putString(SummaryFragment.BUNDLE_TYPEOFVEHICLE, ReportInspector
+				bundle.putString(SummaryFragment.BUNDLE_TYPE_OF_VEHICLE, ReportInspector
 						.TypeOfVehicle.METRO.toString());
-				bundle.putString(SummaryFragment.BUNDLE_NAMEOFSTATION, mStation.getName());
+				bundle.putString(SummaryFragment.BUNDLE_NAME_OF_STATION, mStation.getName());
 				((BaseActivity) mActivity).changeFragment(SummaryFragment.class.getName(),bundle);
 			}
 		}

@@ -206,7 +206,7 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 		chooseTransportDialogFragment.show(getFragmentManager(), "alertDialog");
 	}
 
-	private boolean checkingStatus() {
+	private boolean ableToReport() {
 		if (!((LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE))
 				.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 			Util.makeAlertDialogGPS(getActivity(), getString(R.string.full_map_requesting_enabling_GPS_report));
@@ -227,8 +227,8 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 		Bundle bundle = new Bundle();
 		bundle.putDouble(SummaryFragment.BUNDLE_LATITUDE, location.getLatitude());
 		bundle.putDouble(SummaryFragment.BUNDLE_LONGITUDE, location.getLongitude());
-		bundle.putString(SummaryFragment.BUNDLE_TYPEOFVEHICLE, typeOfVehicle);
-		//bundle.putString(SummaryFragment.BUNDLE_NAMEOFSTATION, mStation.getName());
+		bundle.putString(SummaryFragment.BUNDLE_TYPE_OF_VEHICLE, typeOfVehicle);
+		//bundle.putString(SummaryFragment.BUNDLE_NAME_OF_STATION, mStation.getName());
 		((BaseActivity) getActivity()).changeFragment(SummaryFragment.class.getName(), bundle);
 	}
 
@@ -275,7 +275,7 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 	@Override
 	public void OnChoosingTram(View clickedView) {
 		Log.d(TAG, "OnChoosingTram");
-		if (!checkingStatus()) {
+		if (!ableToReport()) {
 			return;
 		}
 		//check if we can use last known position
@@ -283,14 +283,13 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 			changeFragmentToSummary(mLastKnownLocation, ReportInspector.TypeOfVehicle.TRAM.toString());
 		} else {
 			Util.makeAlertDialogOnlyOK(getActivity(), getString(R.string.full_map_problem_with_position));
-			return;
 		}
 	}
 
 	@Override
 	public void OnChoosingBus(View clickedView) {
 		Log.d(TAG, "OnChoosingBus");
-		if (!checkingStatus()) {
+		if (!ableToReport()) {
 			return;
 		}
 //		//check if we can use last known position
@@ -298,7 +297,6 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 			changeFragmentToSummary(mLastKnownLocation, ReportInspector.TypeOfVehicle.BUS.toString());
 		} else {
 			Util.makeAlertDialogOnlyOK(getActivity(), getString(R.string.full_map_problem_with_position));
-			return;
 		}
 	}
 }
