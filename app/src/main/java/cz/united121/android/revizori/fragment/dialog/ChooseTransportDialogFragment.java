@@ -59,29 +59,34 @@ public class ChooseTransportDialogFragment extends DialogFragment {
 		getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 	}
 
+	@Override
+	public void onDestroyView() {
+		ButterKnife.unbind(this);
+		//mChooseTransportInterface = null;
+		Log.d(TAG, "onDestroyView");
+		super.onDestroyView();
+	}
+
 	@OnClick(R.id.dialog_choose_type_metro)
 	public void onMetroClick(View view) {
-		mChooseTransportInterface.OnChoosingMetro(view);
-		dismiss();
+		mChooseTransportInterface.OnChoosingMetro(this);
 	}
 
 	@OnClick(R.id.dialog_choose_type_tram)
 	public void onTramClick(View view) {
-		mChooseTransportInterface.OnChoosingTram(view);
-		dismiss();
+		mChooseTransportInterface.OnChoosingTram(this);
 	}
 
 	@OnClick(R.id.dialog_choose_type_bus)
 	public void onBusClick(View view) {
-		mChooseTransportInterface.OnChoosingBus(view);
-		dismiss();
+		mChooseTransportInterface.OnChoosingBus(this);
 	}
 
 	public interface ChooseTransportInterface {
-		void OnChoosingMetro(View clickedView);
+		void OnChoosingMetro(ChooseTransportDialogFragment fragment);
 
-		void OnChoosingTram(View clickedView);
+		void OnChoosingTram(ChooseTransportDialogFragment fragment);
 
-		void OnChoosingBus(View clickedView);
+		void OnChoosingBus(ChooseTransportDialogFragment fragment);
 	}
 }

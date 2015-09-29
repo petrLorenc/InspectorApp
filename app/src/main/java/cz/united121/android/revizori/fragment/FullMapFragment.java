@@ -280,14 +280,22 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 	}
 
 	@Override
-	public void OnChoosingMetro(View clickedView) {
+	public void OnChoosingMetro(ChooseTransportDialogFragment fragment) {
 		Log.d(TAG, "OnChoosingMetro");
+
+		fragment.getDialog().dismiss();
+		fragment.dismiss();
+
 		((MapActivity) getActivity()).changeFragment(MetroStationsFragment.class.getName());
 	}
 
 	@Override
-	public void OnChoosingTram(View clickedView) {
+	public void OnChoosingTram(ChooseTransportDialogFragment fragment) {
 		Log.d(TAG, "OnChoosingTram");
+
+		fragment.getDialog().dismiss();
+		fragment.dismiss();
+
 		if (!ableToReport()) {
 			return;
 		}
@@ -300,8 +308,12 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 	}
 
 	@Override
-	public void OnChoosingBus(View clickedView) {
+	public void OnChoosingBus(ChooseTransportDialogFragment fragment) {
 		Log.d(TAG, "OnChoosingBus");
+
+		fragment.getDialog().dismiss();
+		fragment.dismiss();
+
 		if (!ableToReport()) {
 			return;
 		}
