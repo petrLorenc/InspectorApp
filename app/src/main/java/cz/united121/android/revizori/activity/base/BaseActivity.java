@@ -56,13 +56,15 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
             getFragmentManager()
                     .beginTransaction()
                     .add(R.id.fragment_place, fragment, fragment.getClass().getName())
-                    .commit();
-        }else{
+					.addToBackStack(null)
+					.commit();
+		}else{
 			// checking savedInstanceState - after rotate it wont be null -> no adding same fragment second time
 			if(savedInstanceState == null ) {
 				getFragmentManager()
 						.beginTransaction()
 						.add(R.id.fragment_place, fragment, fragment.getClass().getName())
+						.addToBackStack(null)
 						.commit();
 			}
 		}
@@ -98,15 +100,15 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 				fragment.setArguments(args);
 			}
 			getFragmentManager().beginTransaction()
-                    .setCustomAnimations(
-							R.animator.fragment_slide_in, R.animator.fragment_slide_out,0,0)
+					.setCustomAnimations(
+							R.animator.fragment_slide_in, R.animator.fragment_slide_out, 0, 0)
 					.replace(R.id.fragment_place,fragment)
 					.addToBackStack(null)
 					.commit();
 		}else{
 			getFragmentManager().beginTransaction()
 					.setCustomAnimations(
-							R.animator.fragment_slide_in, R.animator.fragment_slide_out,0,0)
+							R.animator.fragment_slide_in, R.animator.fragment_slide_out, 0, 0)
 					.replace(R.id.fragment_place,fragment)
 					.addToBackStack(null)
 					.commit();

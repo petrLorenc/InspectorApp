@@ -1,5 +1,6 @@
 package cz.united121.android.revizori.fragment;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +17,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
@@ -25,7 +27,6 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cz.united121.android.revizori.BuildConfig;
 import cz.united121.android.revizori.R;
 import cz.united121.android.revizori.activity.MapActivity;
 import cz.united121.android.revizori.activity.base.BaseActivity;
@@ -47,7 +48,7 @@ import cz.united121.android.revizori.util.Util;
 public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 		AlertDialogFragment.AlertOnClickListener, LocationHelper.LocationHelperInterface, ChooseTransportDialogFragment.ChooseTransportInterface {
 	public static final String TAG = FullMapFragment.class.getName();
-	public static final String BROADCAST_TO_REFRESH_MAP = "cz.united121.android.revizori.fragment.refrestMap";
+	public static final String BROADCAST_TO_REFRESH_MAP = "cz.united121.android.revizori.fragment.refresh_map";
 	private static View cachedView;
 	@Bind(R.id.reporting_insperctor)
 	public ImageView mReportingGeneral;
@@ -58,8 +59,9 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 	@Bind(R.id.reporting_insperctor_metro)
 	public ImageView mReportingMetro;
 	private List<ReportInspector> listPIncpectorObj = new ArrayList<>();
-	private MapFragment mMapFragment;
+	private SupportMapFragment mMapFragment;
 	private GoogleMap mGoogleMap;
+	private AppCompatActivity mContainingActivity;
 
 	private BroadcastReceiver myRefrestMapBroadcastReceiver = new BroadcastReceiver() {
 		@Override
@@ -99,6 +101,12 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 	}
 
 	@Override
+	public void onAttach(Activity activity) {
+		mContainingActivity = (AppCompatActivity) activity;
+		super.onAttach(activity);
+	}
+
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		Log.d(TAG, "onCreate");
@@ -122,12 +130,11 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 							"Zapnout",
 							"Později");
 			alertDialogFragment.show(getFragmentManager(), "alertDialog");
+			mMapFragment = (SupportMapFragment) mContainingActivity.getSupportFragmentManager().findFragmentById(R.id.map);
+			mMapFragment.getMapAsync(this);
 		}
 		Log.d(TAG, "onCreateView");
 		ButterKnife.bind(this, cachedView);
-
-		mMapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
-		mMapFragment.getMapAsync(this);
 
 		mLocationHelper.registerListener(this);
 
@@ -153,9 +160,7 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 	@Override
 	public void onPause() {
 		super.onPause();
-		if (BuildConfig.DEBUG) {
-			Log.d(TAG, "onPause");
-		}
+		mMapFragment.onPause();
 		getActivity().unregisterReceiver(this.myRefrestMapBroadcastReceiver);
 	}
 
@@ -164,18 +169,26 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 		super.onDestroyView();
 		Log.d(TAG, "onDestroyView");
 		mLocationHelper.removeListener(this);
+		ButterKnife.unbind(this);
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
 		Log.d(TAG, "onDestroy");
-		cachedView = null;
 
 		Intent stopIntent = new Intent(getActivity(), MyUpdatingService.class);
 		stopIntent.setAction(MyUpdatingService.SERVICE_STOP);
 		getActivity().startService(stopIntent);
 	}
+
+	@Override
+	public void onDetach() {
+
+		cachedView = null;
+		super.onDetach();
+	}
+
 
 	@Override
 	public void onMapReady(GoogleMap googleMap) {
@@ -220,7 +233,7 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 	}
 
 	private void changeFragmentToSummary(Location location, String typeOfVehicle) {
-		oneMinuteHandler.postDelayed(oneMinuteTask, PERIOD_BETWEEN_REPORTING);
+		//oneMinuteHandler.postDelayed(oneMinuteTask, PERIOD_BETWEEN_REPORTING);
 		isTimeValid = false;
 		isLocationValid = false;
 

@@ -37,7 +37,7 @@ public class SummaryFragment extends BaseFragment {
 	EditText mSummary;
 	@Bind(R.id.summary_text_view_thanks)
 	TextView mThanksText;
-
+	Bundle passArg;
 	private ReportInspector mReportInspector;
 
 	@Override
@@ -56,33 +56,32 @@ public class SummaryFragment extends BaseFragment {
 
 		mThanksText.setText(Html.fromHtml(getString(R.string.summary_thanks_and_request)));
 
-		Bundle passArg = getArguments();
-		if(passArg == null){
-			return view;
-		}
-		double latitude = passArg.getDouble(BUNDLE_LATITUDE, 0.0);
-		double longitude = passArg.getDouble(BUNDLE_LONGITUDE, 0.0);
-		String typeOfVehicle = passArg.getString(BUNDLE_TYPE_OF_VEHICLE, ReportInspector.TypeOfVehicle
-				.BUS.toString()); // default is BUS
-		String nameOfStation = passArg.getString(BUNDLE_NAME_OF_STATION, "Neznámá"); // only for metro
-
-		mReportInspector = new ReportInspector(
-				ParseUser.getCurrentUser(),
-				new ParseGeoPoint(passArg.getDouble(BUNDLE_LATITUDE,0.0),
-						          passArg.getDouble(BUNDLE_LONGITUDE, 0.0)),
-				passArg.getString(BUNDLE_TYPE_OF_VEHICLE, ReportInspector.TypeOfVehicle.BUS.toString()));
-				// default is BUS);
-
-		mReportInspector.setNameOfStation(nameOfStation);
-		mReportInspector.saveEventually();
+		passArg = getArguments();
 
 		return view;
 	}
 
 	@OnClick(R.id.summary_to_map_button)
-	public void onClickBackToMap(View view){
-		mReportInspector.setComment(mSummary.getText().toString());
-		mReportInspector.saveEventually();
+	public void onSaveAndReturnToMap(View view) {
+		savingReportFromPassArg();
 		((BaseActivity) getActivity()).changeFragment(FullMapFragment.class.getName());
+	}
+
+	private void savingReportFromPassArg() {
+		if (passArg == null) {
+			Log.e(TAG, "passArg == null so we cant save report inspector");
+			return;
+		}
+		mReportInspector = new ReportInspector(
+				ParseUser.getCurrentUser(),
+				new ParseGeoPoint(passArg.getDouble(BUNDLE_LATITUDE, 0.0),
+						passArg.getDouble(BUNDLE_LONGITUDE, 0.0)),
+				passArg.getString(BUNDLE_TYPE_OF_VEHICLE, ReportInspector.TypeOfVehicle.BUS.toString()),
+				mSummary.getText().toString(),
+				passArg.getString(BUNDLE_NAME_OF_STATION, "Neznámá"));
+
+		mReportInspector.saveInBackground();
+		ParseUser.getCurrentUser().increment("score");
+		ParseUser.getCurrentUser().saveInBackground();
 	}
 }

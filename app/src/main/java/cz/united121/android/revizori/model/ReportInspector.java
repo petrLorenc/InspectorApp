@@ -50,6 +50,18 @@ public class ReportInspector extends ParseObject implements ClusterItem {
 		put(TYPEOFVEHICLE, typeOfVehicle);
 	}
 
+	public ReportInspector(ParseUser user, ParseGeoPoint location, String typeOfVehicle,
+						   String commentIfAvailable, String nameOfStationIfAvailable) {
+		put(USER, user);
+		put(LOCATION, location);
+		put(TIMEZONE, TimeZone.getDefault().getDisplayName(false, TimeZone.SHORT, Locale
+				.getDefault()));
+		put(TYPEOFVEHICLE, typeOfVehicle);
+		put(COMMENT, commentIfAvailable);
+		put(NAME_OF_STATION, nameOfStationIfAvailable);
+	}
+
+
 	public static ParseQuery<ReportInspector> getQuery() {
 		return ParseQuery.getQuery(ReportInspector.class);
 	}

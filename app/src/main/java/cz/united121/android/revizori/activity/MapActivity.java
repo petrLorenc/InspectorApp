@@ -12,7 +12,7 @@ public class MapActivity extends BaseActivity {
 
     @Override
     protected String getFragmentName() {
-        return FullMapFragment.class.getName();
-    }
+		return FullMapFragment.class.getName();
+	}
 
 }
