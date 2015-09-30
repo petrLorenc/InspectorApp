@@ -11,13 +11,13 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.parse.ParseUser;
 
 import cz.united121.android.revizori.R;
 import cz.united121.android.revizori.activity.LoginActivity;
 import cz.united121.android.revizori.fragment.FullMapFragment;
+import cz.united121.android.revizori.fragment.RankingFragment;
 import cz.united121.android.revizori.fragment.SettingFragment;
 import cz.united121.android.revizori.util.Util;
 
@@ -135,7 +135,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 				break;
 
 			case R.id.drawer_menu_item_about_me:
-				Toast.makeText(BaseActivity.this, "Make a Toast", Toast.LENGTH_SHORT).show();
+				changeFragment(RankingFragment.class.getName());
 				break;
 
 			case R.id.drawer_menu_item_log_out:

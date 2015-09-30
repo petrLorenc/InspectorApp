@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import butterknife.ButterKnife;
+
 /**
  * TODO add class description
  * Created by Petr Lorenc[Lorenc55Petr@seznam.cz] on {6.8.2015}
@@ -25,9 +27,14 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-		Log.d(TAG,"onCreateView");
+		Log.d(TAG, "onCreateView");
 		View view = inflater.inflate(getLayout(), container, false);
-		view.invalidate();
 		return view;
     }
+
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+		ButterKnife.unbind(this);
+	}
 }

@@ -184,7 +184,6 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 
 	@Override
 	public void onDetach() {
-
 		cachedView = null;
 		super.onDetach();
 	}

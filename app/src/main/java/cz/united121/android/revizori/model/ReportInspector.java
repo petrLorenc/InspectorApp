@@ -87,7 +87,7 @@ public class ReportInspector extends ParseObject implements ClusterItem {
 	public void setMarker(GoogleMap map){
 		mMarker = map.addMarker(new MarkerOptions().
 				position(mPosition != null ? mPosition : getLocation()).
-				title(getTypeOfVehicle()));
+				title(ParseUser.getCurrentUser().getUsername()));
 	}
 
 	public void removeMarker(){
