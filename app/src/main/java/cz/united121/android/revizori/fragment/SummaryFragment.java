@@ -20,6 +20,7 @@ import cz.united121.android.revizori.R;
 import cz.united121.android.revizori.activity.base.BaseActivity;
 import cz.united121.android.revizori.fragment.base.BaseFragment;
 import cz.united121.android.revizori.model.ReportInspector;
+import cz.united121.android.revizori.model.helper.TypeOfVehicle;
 
 /**
  * TODO add class description
@@ -76,7 +77,7 @@ public class SummaryFragment extends BaseFragment {
 				ParseUser.getCurrentUser(),
 				new ParseGeoPoint(passArg.getDouble(BUNDLE_LATITUDE, 0.0),
 						passArg.getDouble(BUNDLE_LONGITUDE, 0.0)),
-				passArg.getString(BUNDLE_TYPE_OF_VEHICLE, ReportInspector.TypeOfVehicle.BUS.toString()),
+				TypeOfVehicle.valueOf(passArg.getString(BUNDLE_TYPE_OF_VEHICLE)),
 				mSummary.getText().toString(),
 				passArg.getString(BUNDLE_NAME_OF_STATION, "Neznámá"));
 

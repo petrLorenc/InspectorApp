@@ -16,8 +16,8 @@ import butterknife.ButterKnife;
 import cz.united121.android.revizori.R;
 import cz.united121.android.revizori.activity.base.BaseActivity;
 import cz.united121.android.revizori.fragment.SummaryFragment;
-import cz.united121.android.revizori.model.ReportInspector;
 import cz.united121.android.revizori.model.Station;
+import cz.united121.android.revizori.model.helper.TypeOfVehicle;
 import cz.united121.android.revizori.ui.helper.FilterableViewAdapter;
 
 /**
@@ -74,8 +74,7 @@ public class StationsViewAdapter extends FilterableViewAdapter<StationsViewAdapt
 				Bundle bundle = new Bundle();
 				bundle.putDouble(SummaryFragment.BUNDLE_LATITUDE,mStation.getLatitude());
 				bundle.putDouble(SummaryFragment.BUNDLE_LONGITUDE,mStation.getLongtitude());
-				bundle.putString(SummaryFragment.BUNDLE_TYPE_OF_VEHICLE, ReportInspector
-						.TypeOfVehicle.METRO.toString());
+				bundle.putString(SummaryFragment.BUNDLE_TYPE_OF_VEHICLE, TypeOfVehicle.METRO.name());
 				bundle.putString(SummaryFragment.BUNDLE_NAME_OF_STATION, mStation.getName());
 				((BaseActivity) mActivity).changeFragment(SummaryFragment.class.getName(),bundle);
 			}

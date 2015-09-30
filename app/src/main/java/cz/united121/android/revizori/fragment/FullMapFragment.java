@@ -37,6 +37,7 @@ import cz.united121.android.revizori.helper.LocationHelper;
 import cz.united121.android.revizori.listeners.helper.MyMultipleCameraChangeListener;
 import cz.united121.android.revizori.model.ReportInspector;
 import cz.united121.android.revizori.model.helper.LocationGetter;
+import cz.united121.android.revizori.model.helper.TypeOfVehicle;
 import cz.united121.android.revizori.service.MyTrackingService;
 import cz.united121.android.revizori.service.MyUpdatingService;
 import cz.united121.android.revizori.util.Util;
@@ -300,7 +301,7 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 		}
 		//check if we can use last known position
 		if (mLastKnownLocation != null && isLocationValid) {
-			changeFragmentToSummary(mLastKnownLocation, ReportInspector.TypeOfVehicle.TRAM.toString());
+			changeFragmentToSummary(mLastKnownLocation, TypeOfVehicle.TRAM.name());
 		} else {
 			Util.makeAlertDialogOnlyOK(getActivity(), getString(R.string.full_map_problem_with_position));
 		}
@@ -318,7 +319,7 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 		}
 //		//check if we can use last known position
 		if (mLastKnownLocation != null && isLocationValid) {
-			changeFragmentToSummary(mLastKnownLocation, ReportInspector.TypeOfVehicle.BUS.toString());
+			changeFragmentToSummary(mLastKnownLocation, TypeOfVehicle.BUS.toString());
 		} else {
 			Util.makeAlertDialogOnlyOK(getActivity(), getString(R.string.full_map_problem_with_position));
 		}

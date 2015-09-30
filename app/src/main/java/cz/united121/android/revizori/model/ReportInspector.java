@@ -1,6 +1,7 @@
 package cz.united121.android.revizori.model;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -13,6 +14,8 @@ import com.parse.ParseUser;
 
 import java.util.Locale;
 import java.util.TimeZone;
+
+import cz.united121.android.revizori.model.helper.TypeOfVehicle;
 
 /**
  * After set have to call saving function
@@ -50,13 +53,13 @@ public class ReportInspector extends ParseObject implements ClusterItem {
 		put(TYPEOFVEHICLE, typeOfVehicle);
 	}
 
-	public ReportInspector(ParseUser user, ParseGeoPoint location, String typeOfVehicle,
+	public ReportInspector(ParseUser user, ParseGeoPoint location, TypeOfVehicle typeOfVehicle,
 						   String commentIfAvailable, String nameOfStationIfAvailable) {
 		put(USER, user);
 		put(LOCATION, location);
 		put(TIMEZONE, TimeZone.getDefault().getDisplayName(false, TimeZone.SHORT, Locale
 				.getDefault()));
-		put(TYPEOFVEHICLE, typeOfVehicle);
+		put(TYPEOFVEHICLE, typeOfVehicle.name());
 		put(COMMENT, commentIfAvailable);
 		put(NAME_OF_STATION, nameOfStationIfAvailable);
 	}
@@ -64,6 +67,10 @@ public class ReportInspector extends ParseObject implements ClusterItem {
 
 	public static ParseQuery<ReportInspector> getQuery() {
 		return ParseQuery.getQuery(ReportInspector.class);
+	}
+
+	public TypeOfVehicle getTypeOfVehicle() {
+		return TypeOfVehicle.valueOf(getString(TYPEOFVEHICLE));
 	}
 
 	public void setComment(String comment) {
@@ -74,10 +81,6 @@ public class ReportInspector extends ParseObject implements ClusterItem {
 		put(NAME_OF_STATION, nameOfStation);
 	}
 
-	public String getTypeOfVehicle(){
-		return getString(TYPEOFVEHICLE);
-	}
-
 	public LatLng getLocation() {
 		ParseGeoPoint parseGeoPoint = getParseGeoPoint(LOCATION);
 		mPosition = new LatLng(parseGeoPoint.getLatitude(),parseGeoPoint.getLongitude());
@@ -86,8 +89,11 @@ public class ReportInspector extends ParseObject implements ClusterItem {
 
 	public void setMarker(GoogleMap map){
 		mMarker = map.addMarker(new MarkerOptions().
-				position(mPosition != null ? mPosition : getLocation()).
-				title(ParseUser.getCurrentUser().getUsername()));
+						position(mPosition != null ? mPosition : getLocation())
+						.title(getParseUser(USER).getUsername())
+						.icon(BitmapDescriptorFactory.fromResource(getTypeOfVehicle().getMarkerImageResource()))
+		);
+
 	}
 
 	public void removeMarker(){
@@ -99,23 +105,5 @@ public class ReportInspector extends ParseObject implements ClusterItem {
 	@Override
 	public LatLng getPosition() {
 		return ((mPosition != null) ? mPosition : getLocation());
-	}
-
-	public enum TypeOfVehicle {
-
-		METRO("Metro"),
-		BUS("Bus"),
-		TRAM("Tram");
-
-		private String name;
-
-		TypeOfVehicle(String name) {
-			this.name = name;
-		}
-
-		@Override
-		public String toString() {
-			return name;
-		}
 	}
 }
