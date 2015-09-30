@@ -3,11 +3,13 @@ package cz.united121.android.revizori;
 import android.app.Application;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
 import cz.united121.android.revizori.model.Images;
 import cz.united121.android.revizori.model.ReportInspector;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * TODO add class description
@@ -22,7 +24,8 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "onCreate");
+		Fabric.with(this, new Crashlytics());
+		Log.d(TAG, "onCreate");
 
         Parse.enableLocalDatastore(this);
 

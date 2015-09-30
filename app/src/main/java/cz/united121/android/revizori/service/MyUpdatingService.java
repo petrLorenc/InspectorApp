@@ -109,7 +109,7 @@ public class MyUpdatingService extends Service implements LocationHelper.Locatio
 			mUpdatingTimer.purge();
 			stopSelf();
 		}
-		return START_STICKY;
+		return START_NOT_STICKY;
 	}
 
 	@Override
