@@ -8,9 +8,9 @@ import cz.united121.android.revizori.R;
  **/
 public enum TypeOfVehicle {
 
-	METRO("Metro", R.drawable.marker_metro),
-	BUS("Bus", R.drawable.marker_bus),
-	TRAM("Tram", R.drawable.marker_tram);
+	METRO("Metro", R.drawable.marker_metro_smaller),
+	BUS("Bus", R.drawable.marker_metro_smaller),
+	TRAM("Tram", R.drawable.marker_metro_smaller);
 
 	private String name;
 	private int markerImageResource;
