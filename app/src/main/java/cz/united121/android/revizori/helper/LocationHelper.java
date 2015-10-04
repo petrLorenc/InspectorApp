@@ -76,6 +76,7 @@ public class LocationHelper implements LocationListener, GoogleApiClient.Connect
 		mLocationHelperInterfaceList.remove(mLocationHelperInterface);
 		if (mLocationHelperInterfaceList.size() <= 0) {
 			LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+			mLocationHelper = null;
 		}
 	}
 

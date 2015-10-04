@@ -8,7 +8,7 @@ import android.content.IntentFilter;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,10 +19,6 @@ import android.widget.ImageView;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -34,9 +30,6 @@ import cz.united121.android.revizori.fragment.base.BaseFragment;
 import cz.united121.android.revizori.fragment.dialog.AlertDialogFragment;
 import cz.united121.android.revizori.fragment.dialog.ChooseTransportDialogFragment;
 import cz.united121.android.revizori.helper.LocationHelper;
-import cz.united121.android.revizori.listeners.helper.MyMultipleCameraChangeListener;
-import cz.united121.android.revizori.model.ReportInspector;
-import cz.united121.android.revizori.model.helper.LocationGetter;
 import cz.united121.android.revizori.model.helper.TypeOfVehicle;
 import cz.united121.android.revizori.service.MyTrackingService;
 import cz.united121.android.revizori.service.MyUpdatingService;
@@ -51,47 +44,29 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 	public static final String TAG = FullMapFragment.class.getName();
 	public static final String BROADCAST_TO_REFRESH_MAP = "cz.united121.android.revizori.fragment.refresh_map";
 	private static View cachedView;
-	@Bind(R.id.reporting_insperctor)
-	public ImageView mReportingGeneral;
-	@Bind(R.id.reporting_insperctor_bus)
-	public ImageView mReportingBus;
-	@Bind(R.id.reporting_insperctor_tram)
-	public ImageView mReportingTram;
-	@Bind(R.id.reporting_insperctor_metro)
-	public ImageView mReportingMetro;
-	private List<ReportInspector> listPIncpectorObj = new ArrayList<>();
-	private SupportMapFragment mMapFragment;
-	private GoogleMap mGoogleMap;
-	private AppCompatActivity mContainingActivity;
-
-	private BroadcastReceiver myRefrestMapBroadcastReceiver = new BroadcastReceiver() {
+	private static GoogleMap mGoogleMap;
+	private static BroadcastReceiver myRefrestMapBroadcastReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			Log.d(TAG, "onReceive");
-			Log.d(TAG, "LocationGetter.getReports().size == " + LocationGetter.getReports().size());
-			for(ReportInspector reportInspector : LocationGetter.getReports()){
-				reportInspector.setMarker(mGoogleMap);
-			}
+			//Log.d(TAG, "LocationGetter.getReports().size == " + LocationGetter.getReports().size());
+			//for(ReportInspector reportInspector : LocationGetter.getReports()){
+			//reportInspector.setMarker(mGoogleMap);
+			//}
 		}
 	};
-
-	private MyMultipleCameraChangeListener mMyMultipleCameraChangeListener;
-	private LocationHelper mLocationHelper;
-
-
 	/**
 	 * To avoid spam the server we provide one report per minute
 	 */
-	private int PERIOD_BETWEEN_REPORTING = 60 * 1000; // ms
-	private boolean isTimeValid = true;
-	private Handler oneMinuteHandler = new Handler();
-	private Runnable oneMinuteTask = new Runnable() {
-		@Override
-		public void run() {
-			Log.d(TAG, "oneMinuteTask-run");
-			isTimeValid = true;
-		}
-	};
+	// TODO make bigger - this is only for dev purpose
+	private static int PERIOD_BETWEEN_REPORTING = 10 * 1000; // ms
+	private static boolean isTimeValid = true;
+	@Bind(R.id.reporting_insperctor)
+	public ImageView mReportingGeneral;
+	private SupportMapFragment mMapFragment;
+	private AppCompatActivity mContainingActivity;
+	private LocationHelper mLocationHelper;
+	private MyCountingThread mThread;
 
 	private boolean isLocationValid = false;
 	private Location mLastKnownLocation;
@@ -113,9 +88,9 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 		Log.d(TAG, "onCreate");
 		mLocationHelper = LocationHelper.getInstance(getActivity());
 
-		Intent startIntent = new Intent(getActivity(), MyUpdatingService.class);
+		Intent startIntent = new Intent(getActivity().getApplicationContext(), MyUpdatingService.class);
 		startIntent.setAction(MyUpdatingService.SERVICE_START);
-		getActivity().startService(startIntent);
+		getActivity().getApplicationContext().startService(startIntent);
 	}
 
 	@Override
@@ -151,18 +126,18 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 				.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 			Util.makeAlertDialogGPS(getActivity(), getString(R.string.full_map_requesting_enabling_GPS_start));
 		}
-		getActivity().registerReceiver(this.myRefrestMapBroadcastReceiver, new IntentFilter(BROADCAST_TO_REFRESH_MAP));
+		getActivity().getApplication().registerReceiver(this.myRefrestMapBroadcastReceiver, new IntentFilter(BROADCAST_TO_REFRESH_MAP));
 
-		Intent startIntent = new Intent(getActivity(), MyUpdatingService.class);
+		Intent startIntent = new Intent(getActivity().getApplication(), MyUpdatingService.class);
 		startIntent.setAction(MyUpdatingService.SERVICE_FORCE);
-		getActivity().startService(startIntent);
+		getActivity().getApplication().startService(startIntent);
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
 		mMapFragment.onPause();
-		getActivity().unregisterReceiver(this.myRefrestMapBroadcastReceiver);
+		getActivity().getApplication().unregisterReceiver(this.myRefrestMapBroadcastReceiver);
 	}
 
 	@Override
@@ -178,9 +153,11 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 		super.onDestroy();
 		Log.d(TAG, "onDestroy");
 
-		Intent stopIntent = new Intent(getActivity(), MyUpdatingService.class);
+		stopCountingPeriod();
+
+		Intent stopIntent = new Intent(getActivity().getApplication(), MyUpdatingService.class);
 		stopIntent.setAction(MyUpdatingService.SERVICE_STOP);
-		getActivity().startService(stopIntent);
+		getActivity().getApplication().startService(stopIntent);
 	}
 
 	@Override
@@ -194,20 +171,8 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 	public void onMapReady(GoogleMap googleMap) {
 		Log.d(TAG, "onMapReady");
 		this.mGoogleMap = googleMap;
-
-		this.mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-			@Override
-			public void onMapClick(LatLng latLng) {
-				Log.d(TAG, "onMapClick");
-				Log.d("arg0", latLng.latitude + "-" + latLng.longitude);
-
-				mReportingGeneral.setVisibility(View.VISIBLE);
-				mReportingBus.setVisibility(View.GONE);
-				mReportingTram.setVisibility(View.GONE);
-				mReportingMetro.setVisibility(View.GONE);
-			}
-		});
 		this.mGoogleMap.setMyLocationEnabled(true);
+		this.mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
 
 	}
 
@@ -219,8 +184,8 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 		chooseTransportDialogFragment.show(getFragmentManager(), "alertDialog");
 	}
 
-	private boolean ableToReport() {
-		if (!((LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE))
+	private boolean ableToReport(boolean inMetroReport) {
+		if (!inMetroReport && !((LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE))
 				.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
 			Util.makeAlertDialogGPS(getActivity(), getString(R.string.full_map_requesting_enabling_GPS_report));
 			return false;
@@ -232,25 +197,28 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 		return true;
 	}
 
-	private void changeFragmentToSummary(Location location, String typeOfVehicle) {
-		//oneMinuteHandler.postDelayed(oneMinuteTask, PERIOD_BETWEEN_REPORTING);
+	private void startTimerToAvoidRepeteadlyReport() {
+		startCountingPeriod();
 		isTimeValid = false;
-		isLocationValid = false;
+	}
+
+	private void changeFragmentToSummary(Location location, String typeOfVehicle) {
+		startTimerToAvoidRepeteadlyReport();
 
 		Bundle bundle = new Bundle();
 		bundle.putDouble(SummaryFragment.BUNDLE_LATITUDE, location.getLatitude());
 		bundle.putDouble(SummaryFragment.BUNDLE_LONGITUDE, location.getLongitude());
 		bundle.putString(SummaryFragment.BUNDLE_TYPE_OF_VEHICLE, typeOfVehicle);
-		//bundle.putString(SummaryFragment.BUNDLE_NAME_OF_STATION, mStation.getName());
+
 		((BaseActivity) getActivity()).changeFragment(SummaryFragment.class.getName(), bundle);
 	}
 
 	@Override
 	public void onPositiveClick(AlertDialogFragment dialogFragment) {
 		Log.d(TAG, "onPositiveClick - AlertDialogFragment");
-		Intent startIntent = new Intent(getActivity(), MyTrackingService.class);
+		Intent startIntent = new Intent(getActivity().getApplication(), MyTrackingService.class);
 		startIntent.setAction(MyTrackingService.SERVICE_START);
-		getActivity().startService(startIntent);
+		getActivity().getApplication().startService(startIntent);
 		dialogFragment.dismiss();
 	}
 
@@ -286,6 +254,12 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 		fragment.getDialog().dismiss();
 		fragment.dismiss();
 
+		if (!ableToReport(true)) {
+			return;
+		}
+
+		startTimerToAvoidRepeteadlyReport();
+
 		((MapActivity) getActivity()).changeFragment(MetroStationsFragment.class.getName());
 	}
 
@@ -296,7 +270,7 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 		fragment.getDialog().dismiss();
 		fragment.dismiss();
 
-		if (!ableToReport()) {
+		if (!ableToReport(false)) {
 			return;
 		}
 		//check if we can use last known position
@@ -314,14 +288,45 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 		fragment.getDialog().dismiss();
 		fragment.dismiss();
 
-		if (!ableToReport()) {
+		if (!ableToReport(false)) {
 			return;
 		}
 //		//check if we can use last known position
 		if (mLastKnownLocation != null && isLocationValid) {
-			changeFragmentToSummary(mLastKnownLocation, TypeOfVehicle.BUS.toString());
+			changeFragmentToSummary(mLastKnownLocation, TypeOfVehicle.BUS.name());
 		} else {
 			Util.makeAlertDialogOnlyOK(getActivity(), getString(R.string.full_map_problem_with_position));
+		}
+	}
+
+	private void startCountingPeriod() {
+		mThread = new MyCountingThread();
+		mThread.start();
+	}
+
+	private void stopCountingPeriod() {
+		mThread.close();
+	}
+
+	/**
+	 * Static inner classes don't hold implicit references to their
+	 * enclosing class, so the Activity instance won't be leaked across
+	 * configuration changes. - > to avoid memory leaks
+	 */
+	private static class MyCountingThread extends Thread {
+		private boolean mRunning = false;
+
+		@Override
+		public void run() {
+			mRunning = true;
+			while (mRunning) {
+				SystemClock.sleep(PERIOD_BETWEEN_REPORTING);
+				isTimeValid = true;
+			}
+		}
+
+		public void close() {
+			mRunning = false;
 		}
 	}
 }

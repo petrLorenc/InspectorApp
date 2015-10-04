@@ -39,7 +39,7 @@ public class MyUpdatingService extends Service implements LocationHelper.Locatio
 	 */
 	public static final String SERVICE_FORCE = "cz.united121.android.revizori,service.MyUpdatingService.FORCE_START";
 	public static final String SERVICE_STOP = "cz.united121.android.revizori.service.MyUpdatingService.STOP";
-
+	private static Timer mUpdatingTimer = new Timer();
 	private LocationHelper mLocationManager;
 	private Location mLastKnownPosition;
 	/**
@@ -49,7 +49,6 @@ public class MyUpdatingService extends Service implements LocationHelper.Locatio
 	private int PERIOD_BETWEEN_UPDATING = 10 * 1000; // ms
 	//private boolean TIME_APROVAL = false; // ms
 	private boolean LOCATION_APROVAL = false; // ms
-	private Timer mUpdatingTimer = new Timer();
 	private TimerTask mTimeAproving = new TimerTask() {
 		@Override
 		public void run() {

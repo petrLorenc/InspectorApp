@@ -1,5 +1,7 @@
 package cz.united121.android.revizori.model.helper;
 
+import com.parse.ParseQuery;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,30 +16,25 @@ public class LocationGetter {
 
 	private static List<ReportInspector> mReportList = new ArrayList<>();
 
-	public static void refreshReportsTo(List<ReportInspector> toPreserve) {
-		deleteAllReports();
-		mReportList.addAll(toPreserve);
-//		for(ReportInspector reportInspector : toPreserve){
-//			if(!mReportList.contains(reportInspector)){
-//				mReportList.add(reportInspector);
-//			}
-//		}
-		//deleteRedundantReports(toPreserve);
+	public static void addReport(ReportInspector reportInspector) {
+		mReportList.add(reportInspector);
+		reportInspector.saveInBackground();
 	}
 
-	public static void deleteReports(List<ReportInspector> list){
-		for (ReportInspector reportInspector : list) {
-			if (mReportList.contains(reportInspector)) {
-				reportInspector.removeMarker();
+	public static void refreshReportsTo(List<ReportInspector> toPreserve) {
+		deleteRedundantReports(toPreserve);
+		for (ReportInspector reportInspector : toPreserve) {
+			if (!mReportList.contains(reportInspector)) {
+				mReportList.add(reportInspector);
 			}
 		}
+	}
+
+	public static void deleteReportsByList(List<ReportInspector> list) {
 		mReportList.removeAll(list);
 	}
 
 	public static void deleteAllReports() {
-		for (ReportInspector reportInspector : mReportList) {
-			reportInspector.removeMarker();
-		}
 		mReportList.clear();
 	}
 
@@ -48,10 +45,10 @@ public class LocationGetter {
 				toDelete.add(reportInspectorToPreserve);
 			}
 		}
-		deleteReports(toDelete);
+		deleteReportsByList(toDelete);
 	}
 
-	public static List<ReportInspector> getReports(){
-		return mReportList;
+	public static ParseQuery<ReportInspector> getReports() {
+		return new ParseQuery<ReportInspector>("ReportInspector");
 	}
 }
