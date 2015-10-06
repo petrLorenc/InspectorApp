@@ -65,7 +65,7 @@ public class SummaryFragment extends BaseFragment {
 	@OnClick(R.id.summary_to_map_button)
 	public void onSaveAndReturnToMap(View view) {
 		savingReportFromPassArg();
-		((BaseActivity) getActivity()).changeFragment(FullMapFragment.class.getName());
+		((BaseActivity) getActivity()).changeFragment(TestMapFragment.class.getName());
 	}
 
 	private void savingReportFromPassArg() {

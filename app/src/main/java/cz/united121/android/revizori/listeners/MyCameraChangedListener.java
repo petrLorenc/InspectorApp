@@ -73,7 +73,7 @@ public class MyCameraChangedListener implements GoogleMap.OnCameraChangeListener
 				}
 				LocationGetter.refreshReportsTo((List<ReportInspector>) hashResponse.get(RESPONSE_DATA_KEY));
 				mClusterManager.clearItems();
-				mClusterManager.addItems(LocationGetter.getReports());
+				mClusterManager.addItems(LocationGetter.getReportsWithUpdate());
 			}
 		});
 	}

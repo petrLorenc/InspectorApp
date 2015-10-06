@@ -51,17 +51,25 @@ public class ReportInspector extends ParseObject {
 		put(NAME_OF_STATION, nameOfStationIfAvailable);
 	}
 
-
 	public static ParseQuery<ReportInspector> getQuery() {
 		return ParseQuery.getQuery(ReportInspector.class);
 	}
 
-	public TypeOfVehicle getTypeOfVehicle() {
-		return TypeOfVehicle.valueOf(getString(TYPEOFVEHICLE));
+	public String getUserName() {
+		return getParseUser(USER).getUsername();
+	}
+
+	public String getComment() {
+		return getString(COMMENT);
 	}
 
 	public void setComment(String comment) {
 		put(COMMENT, comment);
+	}
+
+	public String getStringTypeOfVehicle() {
+		//return TypeOfVehicle.valueOf(getString(TYPEOFVEHICLE));
+		return getString(TYPEOFVEHICLE);
 	}
 
 	public void setNameOfStation(String nameOfStation) {

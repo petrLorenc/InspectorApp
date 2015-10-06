@@ -9,4 +9,9 @@
         <item name="colorPrimaryDark">@color/primaryDark</item>
         <item name="colorAccent">@color/accent</item>
     </style>
+
+    <style name="GlobalBackground">
+        <item name="android:background">@color/white</item>
+        <item name="android:clickable">true</item>
+    </style>
 </resources>

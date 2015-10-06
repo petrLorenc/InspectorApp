@@ -53,7 +53,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
             return;
         }
 
-		getFragmentManager().enableDebugLogging(true);
 		if (savedInstanceState == null) {
 			changeFragment(fragmentName);
 		}
@@ -88,7 +87,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 			getFragmentManager().beginTransaction()
 					.setCustomAnimations(
 							R.animator.fragment_slide_in, R.animator.fragment_slide_out, 0, 0)
-					.add(R.id.fragment_place, fragment, backStateName)
+					.replace(R.id.fragment_place, fragment, backStateName)
 					.addToBackStack(backStateName)
 					.commit();
 			return;

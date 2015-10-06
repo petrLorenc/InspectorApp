@@ -1,7 +1,6 @@
 package cz.united121.android.revizori.fragment.dialog;
 
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,14 +23,18 @@ public class ChooseTransportDialogFragment extends DialogFragment {
 
 	private static int optionalRequestCode = 201;
 
-	private ChooseTransportInterface mChooseTransportInterface;
+	private static ChooseTransportInterface mChooseTransportInterface;
 
-	public static ChooseTransportDialogFragment newInstance(Fragment targetFragment) {
+	public static ChooseTransportDialogFragment newInstance(ChooseTransportInterface chooseTransportInterface) {
 		ChooseTransportDialogFragment chooseTransportDialogFragment = new ChooseTransportDialogFragment();
 
-		chooseTransportDialogFragment.setTargetFragment(targetFragment, optionalRequestCode);
+		chooseTransportDialogFragment.setInterfaceForCommunication(chooseTransportInterface);
 
 		return chooseTransportDialogFragment;
+	}
+
+	private void setInterfaceForCommunication(ChooseTransportInterface chooseTransportInterface) {
+		mChooseTransportInterface = chooseTransportInterface;
 	}
 
 	@Nullable
@@ -41,12 +44,6 @@ public class ChooseTransportDialogFragment extends DialogFragment {
 		Log.d(TAG, "onCreateView");
 		View view = inflater.inflate(R.layout.dialog_fragment_choose_type_transport, container, false);
 		ButterKnife.bind(this, view);
-
-		try {
-			mChooseTransportInterface = (ChooseTransportInterface) getTargetFragment();
-		} catch (ClassCastException e) {
-			throw new ClassCastException("Target fragment have to implement ChooseTransportInterface");
-		}
 
 		return view;
 	}
@@ -70,16 +67,22 @@ public class ChooseTransportDialogFragment extends DialogFragment {
 	@OnClick(R.id.dialog_choose_type_metro)
 	public void onMetroClick(View view) {
 		mChooseTransportInterface.OnChoosingMetro(this);
+		getDialog().dismiss();
+		dismiss();
 	}
 
 	@OnClick(R.id.dialog_choose_type_tram)
 	public void onTramClick(View view) {
 		mChooseTransportInterface.OnChoosingTram(this);
+		getDialog().dismiss();
+		dismiss();
 	}
 
 	@OnClick(R.id.dialog_choose_type_bus)
 	public void onBusClick(View view) {
 		mChooseTransportInterface.OnChoosingBus(this);
+		getDialog().dismiss();
+		dismiss();
 	}
 
 	public interface ChooseTransportInterface {

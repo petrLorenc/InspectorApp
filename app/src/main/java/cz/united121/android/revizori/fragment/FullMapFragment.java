@@ -49,8 +49,8 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			Log.d(TAG, "onReceive");
-			//Log.d(TAG, "LocationGetter.getReports().size == " + LocationGetter.getReports().size());
-			//for(ReportInspector reportInspector : LocationGetter.getReports()){
+			//Log.d(TAG, "LocationGetter.getReportsWithUpdate().size == " + LocationGetter.getReportsWithUpdate().size());
+			//for(ReportInspector reportInspector : LocationGetter.getReportsWithUpdate()){
 			//reportInspector.setMarker(mGoogleMap);
 			//}
 		}

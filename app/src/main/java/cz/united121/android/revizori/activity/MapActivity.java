@@ -2,7 +2,6 @@ package cz.united121.android.revizori.activity;
 
 import cz.united121.android.revizori.activity.base.BaseActivity;
 import cz.united121.android.revizori.fragment.TestMapFragment;
-import cz.united121.android.revizori.model.helper.LocationGetter;
 
 /**
  * TODO add class description
@@ -14,12 +13,5 @@ public class MapActivity extends BaseActivity {
     @Override
     protected String getFragmentName() {
 		return TestMapFragment.class.getName();
-	}
-
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		LocationGetter.deleteAllReports();
 	}
 }

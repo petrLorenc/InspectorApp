@@ -1,6 +1,7 @@
 package cz.united121.android.revizori.fragment;
 
 import android.app.Fragment;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
@@ -16,35 +17,36 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseGeoPoint;
-import com.parse.ParseUser;
-
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cz.united121.android.revizori.BuildConfig;
 import cz.united121.android.revizori.R;
-import cz.united121.android.revizori.model.ReportInspector;
+import cz.united121.android.revizori.activity.base.BaseActivity;
+import cz.united121.android.revizori.fragment.dialog.ChooseTransportDialogFragment;
+import cz.united121.android.revizori.helper.LocationHelper;
+import cz.united121.android.revizori.model.MapPoint;
 import cz.united121.android.revizori.model.helper.LocationGetter;
 import cz.united121.android.revizori.model.helper.TestGetterLocation;
 import cz.united121.android.revizori.model.helper.TypeOfVehicle;
+import io.realm.RealmResults;
 
 /**
  * TODO add class description
  * Created by Petr Lorenc[Lorenc55Petr@seznam.cz] on {10/3/2015}
  **/
-public class TestMapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnCameraChangeListener {
+public class TestMapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnCameraChangeListener, LocationHelper.LocationHelperInterface {
 	public static final String TAG = TestMapFragment.class.getName();
 
-	public static final String KEY_POINTS = "points";
 	private final static String BUNDLE_KEY_MAP_STATE = "mapData";
 	private static int PERIOD_BETWEEN_REPORTING = 10 * 1000; // ms
 	private static boolean isTimeValid = true;
 	private static MyCountingThread mThread;
+
+	private static boolean isLocationValid = true;
+	private static Location mLastKnownLocation;
+
 	@Bind(R.id.map)
 	MapView mMapView;
 	GoogleMap mMap;
@@ -95,6 +97,15 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
 	}
 
 	@Override
+	public void onResume() {
+		Log.d(TAG, "onResume");
+		super.onResume();
+		setUpMapAddMarkersIfNeeded();
+		mMapView.onResume();
+		LocationHelper.getInstance(getActivity()).registerListener(this);
+	}
+
+	@Override
 	public void onPause() {
 		Log.d(TAG, "onPause");
 		mMapView.onPause();
@@ -102,13 +113,6 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
 		//mMap = null;
 	}
 
-	@Override
-	public void onResume() {
-		Log.d(TAG, "onResume");
-		super.onResume();
-		setUpMapIfNeeded();
-		mMapView.onResume();
-	}
 
 	@Override
 	public void onDestroyView() {
@@ -128,8 +132,9 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
 	@Override
 	public void onDestroy() {
 		Log.d(TAG, "onDestroy");
-		mMapView.onDestroy();
+		mMap.setMyLocationEnabled(false);
 		mMap = null;
+		mMapView.onDestroy();
 		ButterKnife.unbind(this);
 		super.onDestroy();
 	}
@@ -142,10 +147,12 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
 
 	;
 
-	private void setUpMapIfNeeded() {
-		Log.d(TAG, "setUpMapIfNeeded");
+	private void setUpMapAddMarkersIfNeeded() {
+		Log.d(TAG, "setUpMapAddMarkersIfNeeded");
 		if (mMap == null) {
 			mMapView.getMapAsync(this);
+		} else {
+			refreshMapWithDatabase();
 		}
 	}
 
@@ -161,7 +168,7 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
 		mMap.setOnMapClickListener(this);
 		mMap.setOnCameraChangeListener(this);
 
-		refreshMap();
+		refreshMapWithDatabase();
 
 		CameraPosition lastCameraPosition = TestGetterLocation.getCameraPosition();
 		if (lastCameraPosition != null) {
@@ -172,10 +179,6 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
 	@Override
 	public void onMapClick(LatLng latLng) {
 		Log.d(TAG, "onMapClick");
-		//mMap.addMarker(new MarkerOptions().position(latLng));
-		//TestGetterLocation.addLocationMarker(latLng);
-
-		LocationGetter.addReport(new ReportInspector(ParseUser.getCurrentUser(), new ParseGeoPoint(latLng.latitude, latLng.longitude), TypeOfVehicle.BUS.name()));
 	}
 
 	@Override
@@ -186,41 +189,104 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
 
 	@OnClick(R.id.reporting_insperctor)
 	public void OnReportinInspectorClick(View view) {
-		refreshMap();
+		ChooseTransportDialogFragment chooseTransportDialogFragment =
+				ChooseTransportDialogFragment.newInstance(new ChooseTransportDialogFragment.ChooseTransportInterface() {
+					@Override
+					public void OnChoosingMetro(ChooseTransportDialogFragment fragment) {
+						Log.d(TAG, "OnChoosingMetro");
+						if (requirementsChecked()) {
+							isTimeValid = false;
+
+						}
+					}
+
+					@Override
+					public void OnChoosingTram(ChooseTransportDialogFragment fragment) {
+						Log.d(TAG, "OnChoosingTram");
+						if (requirementsChecked()) {
+							isTimeValid = false;
+							changeFragmentToSummary(mLastKnownLocation, TypeOfVehicle.TRAM.name());
+						}
+					}
+
+					@Override
+					public void OnChoosingBus(ChooseTransportDialogFragment fragment) {
+						Log.d(TAG, "OnChoosingBus");
+						if (requirementsChecked()) {
+							isTimeValid = false;
+							changeFragmentToSummary(mLastKnownLocation, TypeOfVehicle.BUS.name());
+						}
+					}
+				});
+		chooseTransportDialogFragment.show(getFragmentManager(), "alertDialog");
 	}
 
-	private void refreshMap() {
-		LocationGetter.getReports().findInBackground(new FindCallback<ReportInspector>() {
-			@Override
-			public void done(List<ReportInspector> list, ParseException e) {
-				Log.d(TAG, "done");
-				if (e == null && mMap != null) {
-					mMap.clear();
-					for (ReportInspector report : list) {
-						mMap.addMarker(new MarkerOptions()
-								.position(report.getLocation())
-								.icon(BitmapDescriptorFactory.fromResource(report
-										.getTypeOfVehicle()
-										.getMarkerImageResource())));
-					}
-				}
+	private void changeFragmentToSummary(Location mLastKnownLocation, String nameTypeOfVehicle) {
+		startThreadForWaitingPeriodAndSet();
 
+		Bundle bundle = new Bundle();
+
+		bundle.putDouble(SummaryFragment.BUNDLE_LATITUDE, mLastKnownLocation.getLatitude());
+		bundle.putDouble(SummaryFragment.BUNDLE_LONGITUDE, mLastKnownLocation.getLongitude());
+		bundle.putString(SummaryFragment.BUNDLE_TYPE_OF_VEHICLE, nameTypeOfVehicle);
+
+		((BaseActivity) getActivity()).changeFragment(SummaryFragment.class.getName(), bundle);
+	}
+
+	private boolean requirementsChecked() {
+		return isTimeValid && isLocationValid;
+	}
+
+	private void refreshMapWithDatabase() {
+		RealmResults<MapPoint> dataOnMap = LocationGetter.getReportsWithUpdate(new LocationGetter.OnDownloadDataFromNet() {
+			@Override
+			public void dataWasSavedToRealmDatabase() {
+				clearAndAddAllMarkers(LocationGetter.getReportsWithoutUpdate());
 			}
 		});
 
+		clearAndAddAllMarkers(dataOnMap);
+	}
 
+	private void clearAndAddAllMarkers(RealmResults<MapPoint> dataOnMap) {
+		mMap.clear();
+		for (MapPoint report : dataOnMap) {
+			mMap.addMarker(new MarkerOptions()
+					.position(new LatLng(report.getLatitude(), report.getLongitude()))
+					.icon(BitmapDescriptorFactory.fromResource(TypeOfVehicle.valueOf(report.getTranporttype()).getMarkerImageResource()))
+					.title(report.getAuthor()));
+		}
 	}
 
 	//NOT LIFECYCLE OF FRAGMENT/////////////////
 
-	private void startCountingPeriod() {
+	private void startThreadForWaitingPeriodAndSet() {
 		mThread = new MyCountingThread();
 		mThread.start();
 	}
 
-	private void stopCountingPeriod() {
-		mThread.close();
+	//location services //////////////////////////////////
+
+	@Override
+	public void OnLocationChanged(Location location) {
+		Log.d(TAG, "OnLocationChanged");
+		mLastKnownLocation = location;
+		isLocationValid = true;
 	}
+
+	@Override
+	public void OnLocationGetFailed() {
+		Log.d(TAG, "OnLocationGetFailed");
+		isLocationValid = false;
+	}
+
+	@Override
+	public void OnConnectionFailed() {
+		Log.d(TAG, "OnConnectionFailed");
+		isLocationValid = false;
+	}
+
+	//Location services //////////////////////////////////
 
 	/**
 	 * Static inner classes don't hold implicit references to their
@@ -228,19 +294,13 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
 	 * configuration changes. - > to avoid memory leaks
 	 */
 	private static class MyCountingThread extends Thread {
-		private boolean mRunning = false;
 
 		@Override
 		public void run() {
-			mRunning = true;
-			while (mRunning) {
+			if (!isTimeValid) {
 				SystemClock.sleep(PERIOD_BETWEEN_REPORTING);
 				isTimeValid = true;
 			}
-		}
-
-		public void close() {
-			mRunning = false;
 		}
 	}
 }
