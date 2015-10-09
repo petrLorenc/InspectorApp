@@ -10,6 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.parse.ParseUser;
@@ -30,9 +34,11 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
     public static final String TAG = BaseActivity.class.getName();
 
 	private static final String SAVE_FRAGMENT = "fragment_save_in_bundle";
-
+	public FrameLayout mFragmentPlace;
+	public Button mAnimationButton;
 	protected DrawerLayout mDrawerLayout;
 	protected NavigationView mNavigationView;
+
     /**
      * returns the name of the fragment to be instantiated
      *
@@ -57,6 +63,8 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 			changeFragment(fragmentName);
 		}
 
+		mAnimationButton = (Button) findViewById(R.id.base_animation_menu);
+		mFragmentPlace = (FrameLayout) findViewById(R.id.fragment_place);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
 		mNavigationView.setNavigationItemSelectedListener(this);
@@ -67,7 +75,17 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 			((TextView) findViewById(R.id.navigation_drawer_email)).setText(ParseUser
 					.getCurrentUser().getEmail());
 		}
-    }
+
+		final Animation fade = AnimationUtils.loadAnimation(this, R.anim.fade_out_anim);
+		mAnimationButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Log.d(TAG, "onClick");
+				mFragmentPlace.startAnimation(fade);
+
+			}
+		});
+	}
 
 	public void changeFragment(String toFragment){
 		changeFragment(toFragment,null);
