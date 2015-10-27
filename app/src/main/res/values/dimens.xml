@@ -19,5 +19,7 @@
     <dimen name="text_xxxl">32sp</dimen>
     <dimen name="text_4l">35sp</dimen>
     <dimen name="global_padding">20dp</dimen>
+    <dimen name="menu_side_width">80dp</dimen>
+    <dimen name="menu_item_padding">15dp</dimen>
 
 </resources>

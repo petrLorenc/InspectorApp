@@ -191,7 +191,7 @@ public class FullMapFragment extends BaseFragment implements OnMapReadyCallback,
 			return false;
 		}
 		if (!isTimeValid) {
-			Util.makeAlertDialogOnlyOK(getActivity(), "Nemuzete hlasit revizory takto rychle za sebou");
+			Util.makeAlertDialogOnlyOK(getActivity(), mContainingActivity.getString(R.string.full_map_time_request_error));
 			return false;
 		}
 		return true;

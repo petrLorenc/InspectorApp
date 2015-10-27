@@ -8,10 +8,22 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primaryDark</item>
         <item name="colorAccent">@color/accent</item>
+
+        <item name="android:editTextStyle">@style/BaseTextView</item>
     </style>
 
     <style name="GlobalBackground">
-        <item name="android:background">@color/white</item>
+        <item name="android:background">@color/app_background</item>
         <item name="android:clickable">true</item>
     </style>
+
+    <style name="BaseTextView" parent="android:Widget.TextView">
+        <item name="android:textSize">@dimen/text_xl</item>
+    </style>
+
+    <style name="BaseTextView.MenuRow">
+        <item name="android:color">@color/menu_title_color</item>
+    </style>
+
+
 </resources>

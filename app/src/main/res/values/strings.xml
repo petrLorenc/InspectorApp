@@ -13,7 +13,7 @@
     <string name="register_text_view_title">REGISTRACE</string>
     <string name="login_text_view_title">Přihlášení</string>
     <string name="drawer_menu_item_setting">Nastavení</string>
-    <string name="drawer_menu_item_map">Zobraz mapu</string>
+    <string name="drawer_menu_item_map">Zobraz mapuuu</string>
     <string name="drawer_menu_item_rank">Žebříček</string>
     <string name="drawer_menu_item_log_out">Odhlásit</string>
     <string name="snacbar_back_button_message">Opravdu chcete ukončit aplikaci.</string>
@@ -28,4 +28,6 @@
     <string name="summerry_hint_comment_text_edit">Jak revizor vypadal? Číslo linky i další okolnosti jsou vítané …</string>
     <string name="login_login_to_network_settings">Nejste online prosim pripojte se.</string>
     <string name="choose_tranport_title">Kde jste videli revizora?</string>
+    <string name="full_map_time_request_error">Nemuzete hlasit revizory takto rychle za sebou</string>
+    <string name="full_map_location_request_error">Problém s Vaší polohou. Opakujte prosím hlášení později.</string>
 </resources>

@@ -20,4 +20,7 @@
     <color name="dialog_text">@color/white</color>
     <color name="circle_background">@color/primaryDark50</color>
     <color name="circle_background_around">@color/primaryDark</color>
+
+    <color name="menu_title_color">@color/primaryDark</color>
+    <color name="app_background">@color/white</color>
 </resources>

@@ -3,17 +3,16 @@ package cz.united121.android.revizori.activity.base;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import com.parse.ParseUser;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cz.united121.android.revizori.BuildConfig;
 import cz.united121.android.revizori.R;
 import cz.united121.android.revizori.activity.LoginActivity;
@@ -26,13 +25,13 @@ import cz.united121.android.revizori.util.Util;
  * TODO add class description
  * Created by Petr Lorenc[Lorenc55Petr@seznam.cz] on {6.8.2015}
  */
-public abstract class BaseActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public abstract class BaseActivity extends AppCompatActivity{
     public static final String TAG = BaseActivity.class.getName();
 
 	private static final String SAVE_FRAGMENT = "fragment_save_in_bundle";
 
 	protected DrawerLayout mDrawerLayout;
-	protected NavigationView mNavigationView;
+
     /**
      * returns the name of the fragment to be instantiated
      *
@@ -45,7 +44,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         super.onCreate(savedInstanceState);
 		Log.d(TAG, "onCreate");
 		setContentView(R.layout.base_layout);
-
+		ButterKnife.bind(this);
 
         String fragmentName = getFragmentName();
         if (fragmentName == null) {
@@ -57,20 +56,13 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 			changeFragment(fragmentName);
 		}
 
-		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-		mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
-		mNavigationView.setNavigationItemSelectedListener(this);
 
-		if(ParseUser.getCurrentUser() != null) {
-			((TextView) findViewById(R.id.navigation_drawer_username)).setText(ParseUser
-					.getCurrentUser().getUsername());
-			((TextView) findViewById(R.id.navigation_drawer_email)).setText(ParseUser
-					.getCurrentUser().getEmail());
-		}
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
     }
 
 	public void changeFragment(String toFragment){
-		changeFragment(toFragment,null);
+		changeFragment(toFragment, null);
 	}
 
     public void changeFragment(String toFragment, Bundle args){
@@ -118,38 +110,28 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 		return fragment;
 	}
 
-	/**
-	 * Because of implements NavigationView.OnNavigationItemSelectedListener
-	 * Better styling of code
-	 * @param menuItem
-	 * @return
-	 */
-	@Override
-	public boolean onNavigationItemSelected(MenuItem menuItem) {
-		Log.d(TAG, "onNavigationItemSelected");
 
-		switch (menuItem.getItemId()){
-			case R.id.drawer_menu_item_home:
-				changeFragment(TestMapFragment.class.getName());
-				break;
-
-			case R.id.drawer_menu_item_setting:
-				changeFragment(SettingFragment.class.getName());
-				break;
-
-			case R.id.drawer_menu_item_about_me:
-				changeFragment(RankingFragment.class.getName());
-				break;
-
-			case R.id.drawer_menu_item_log_out:
-				startActivity(new Intent(this, LoginActivity.class));
-				ParseUser.logOutInBackground();
-				this.finish();
-				break;
-		}
-		menuItem.setChecked(true);
+	@OnClick(R.id.menu_map_image)
+	public void onMapClick(View view){
 		mDrawerLayout.closeDrawers();
-		return true;
+		changeFragment(TestMapFragment.class.getName());
+	}
+	@OnClick(R.id.menu_settings_image)
+	public void onSettingsClick(View view){
+		mDrawerLayout.closeDrawers();
+		changeFragment(SettingFragment.class.getName());
+	}
+	@OnClick(R.id.menu_score_board_image)
+	public void onScoreboadClick(View view){
+		mDrawerLayout.closeDrawers();
+		changeFragment(RankingFragment.class.getName());
+	}
+	@OnClick(R.id.menu_logout_image)
+	public void onlogoutClick(View view){
+		mDrawerLayout.closeDrawers();
+		startActivity(new Intent(this, LoginActivity.class));
+		ParseUser.logOutInBackground();
+		this.finish();
 	}
 
 	@Override

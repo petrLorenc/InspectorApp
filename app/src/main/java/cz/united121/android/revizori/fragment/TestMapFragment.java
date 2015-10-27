@@ -1,7 +1,12 @@
 package cz.united121.android.revizori.fragment;
 
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
@@ -23,6 +28,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cz.united121.android.revizori.BuildConfig;
 import cz.united121.android.revizori.R;
+import cz.united121.android.revizori.activity.MapActivity;
 import cz.united121.android.revizori.activity.base.BaseActivity;
 import cz.united121.android.revizori.fragment.dialog.ChooseTransportDialogFragment;
 import cz.united121.android.revizori.helper.LocationHelper;
@@ -30,6 +36,7 @@ import cz.united121.android.revizori.model.MapPoint;
 import cz.united121.android.revizori.model.helper.LocationGetter;
 import cz.united121.android.revizori.model.helper.TestGetterLocation;
 import cz.united121.android.revizori.model.helper.TypeOfVehicle;
+import cz.united121.android.revizori.util.Util;
 import io.realm.RealmResults;
 
 /**
@@ -38,15 +45,23 @@ import io.realm.RealmResults;
  **/
 public class TestMapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnCameraChangeListener, LocationHelper.LocationHelperInterface {
 	public static final String TAG = TestMapFragment.class.getName();
-
+	public static final String BROADCAST_TO_REFRESH_MAP = "cz.united121.android.revizori.fragment.refresh_map";
 	private final static String BUNDLE_KEY_MAP_STATE = "mapData";
 	private static int PERIOD_BETWEEN_REPORTING = 10 * 1000; // ms
 	private static boolean isTimeValid = true;
 	private static MyCountingThread mThread;
-
 	private static boolean isLocationValid = true;
 	private static Location mLastKnownLocation;
-
+	private static BroadcastReceiver myRefrestMapBroadcastReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Log.d(TAG, "onReceive");
+			//Log.d(TAG, "LocationGetter.getReportsWithUpdate().size == " + LocationGetter.getReportsWithUpdate().size());
+			//for(ReportInspector reportInspector : LocationGetter.getReportsWithUpdate()){
+			//reportInspector.setMarker(mGoogleMap);
+			//}
+		}
+	};
 	@Bind(R.id.map)
 	MapView mMapView;
 	GoogleMap mMap;
@@ -103,6 +118,7 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
 		setUpMapAddMarkersIfNeeded();
 		mMapView.onResume();
 		LocationHelper.getInstance(getActivity()).registerListener(this);
+		getActivity().getApplication().registerReceiver(this.myRefrestMapBroadcastReceiver, new IntentFilter(BROADCAST_TO_REFRESH_MAP));
 	}
 
 	@Override
@@ -111,6 +127,7 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
 		mMapView.onPause();
 		super.onPause();
 		//mMap = null;
+		getActivity().getApplication().unregisterReceiver(this.myRefrestMapBroadcastReceiver);
 	}
 
 
@@ -196,7 +213,7 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
 						Log.d(TAG, "OnChoosingMetro");
 						if (requirementsChecked()) {
 							isTimeValid = false;
-
+							changeFragmentToMetro();
 						}
 					}
 
@@ -221,6 +238,12 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
 		chooseTransportDialogFragment.show(getFragmentManager(), "alertDialog");
 	}
 
+	private void changeFragmentToMetro() {
+		startThreadForWaitingPeriodAndSet();
+
+		((MapActivity) getActivity()).changeFragment(MetroStationsFragment.class.getName());
+	}
+
 	private void changeFragmentToSummary(Location mLastKnownLocation, String nameTypeOfVehicle) {
 		startThreadForWaitingPeriodAndSet();
 
@@ -234,7 +257,20 @@ public class TestMapFragment extends Fragment implements OnMapReadyCallback, Goo
 	}
 
 	private boolean requirementsChecked() {
-		return isTimeValid && isLocationValid;
+		if (!((LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE))
+				.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+			Util.makeAlertDialogGPS(getActivity(), getString(R.string.full_map_requesting_enabling_GPS_report));
+			return false;
+		}
+		if (!isTimeValid) {
+			Util.makeAlertDialogOnlyOK(getActivity(), getString(R.string.full_map_time_request_error));
+			return false;
+		}
+		if (!isLocationValid) {
+			Util.makeAlertDialogOnlyOK(getActivity(), getString(R.string.full_map_location_request_error));
+			return false;
+		}
+		return true;
 	}
 
 	private void refreshMapWithDatabase() {
